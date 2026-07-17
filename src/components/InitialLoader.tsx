@@ -35,7 +35,7 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="relative flex flex-col items-center max-w-md px-6 text-center z-10 space-y-8">
+      <div className="relative flex flex-col items-center max-w-md px-6 text-center z-10 space-y-6 sm:space-y-8">
         {/* Animated Brand Emblem */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -44,25 +44,25 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
           className="relative"
         >
           <div className="absolute inset-0 bg-indigo-500/30 rounded-3xl blur-2xl animate-pulse" />
-          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 border border-white/10 flex items-center justify-center shadow-2xl">
-            <Building2 className="w-10 h-10 text-indigo-400 animate-pulse" />
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 border border-white/10 flex items-center justify-center shadow-2xl">
+            <Building2 className="w-8 h-8 sm:w-10 sm:h-10 text-indigo-400 animate-pulse" />
           </div>
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-            className="absolute -top-1 -right-1 w-5 h-5 bg-purple-500/20 border border-purple-500/40 rounded-lg flex items-center justify-center"
+            className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-purple-500/20 border border-purple-500/40 rounded-lg flex items-center justify-center"
           >
-            <Sparkles className="w-3 h-3 text-purple-400" />
+            <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-purple-400" />
           </motion.div>
         </motion.div>
 
         {/* Brand Text */}
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           <motion.h1
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-3xl md:text-4xl font-display font-black tracking-widest bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent uppercase"
+            className="text-2xl sm:text-3xl md:text-4xl font-display font-black tracking-wider sm:tracking-widest bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent uppercase"
           >
             CIVIL PORTAL
           </motion.h1>
@@ -70,14 +70,14 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
             initial={{ y: 15, opacity: 0 }}
             animate={{ y: 0, opacity: 0.6 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-xs tracking-[0.4em] text-indigo-400 uppercase font-black"
+            className="text-[10px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] text-indigo-400 uppercase font-black"
           >
             Satkhira Gov Polytechnic
           </motion.p>
         </div>
 
         {/* Beautiful Dynamic Progress Bar */}
-        <div className="w-64 space-y-2 pt-4">
+        <div className="w-52 sm:w-64 space-y-2 pt-2 sm:pt-4">
           <div className="h-1 w-full bg-slate-900 rounded-full overflow-hidden border border-white/5 p-[1px] relative">
             <motion.div
               className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
@@ -85,7 +85,7 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
               transition={{ ease: 'easeOut' }}
             />
           </div>
-          <div className="flex justify-between text-[10px] font-mono text-slate-500 font-bold uppercase tracking-widest">
+          <div className="flex justify-between text-[9px] sm:text-[10px] font-mono text-slate-500 font-bold uppercase tracking-widest">
             <span>Loading Core Assets</span>
             <span>{Math.min(progress, 100)}%</span>
           </div>
