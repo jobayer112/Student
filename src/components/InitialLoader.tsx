@@ -15,13 +15,13 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
         if (prev >= 100) {
           clearInterval(interval);
           if (onComplete) {
-            setTimeout(onComplete, 150); // Fast transition delay
+            setTimeout(onComplete, 50); // Minimal transition delay
           }
           return 100;
         }
-        return prev + Math.floor(Math.random() * 25) + 15; // Much faster increment (15% - 39% per tick)
+        return prev + Math.floor(Math.random() * 40) + 30; // Very aggressive increment
       });
-    }, 45); // Faster interval (45ms instead of 100ms)
+    }, 20); // Extremely fast interval (20ms)
 
     return () => clearInterval(interval);
   }, [onComplete]);
