@@ -145,12 +145,9 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="flex items-center justify-center gap-4 mb-4">
-        <div className="w-10 h-10 rounded-xl border border-white/20 p-0.5 bg-gradient-to-br from-slate-900 to-indigo-900 shadow-xl">
-           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" alt="AI" className="w-full h-full object-cover rounded-lg" />
-        </div>
-        <div className="h-4 w-px bg-white/10" />
-        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">AI Verified System</span>
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <ShieldCheck className="w-5 h-5 text-indigo-400 animate-pulse" />
+        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">SECURE REGISTRATION SYSTEM</span>
       </div>
 
       {/* Progress Indicator */}

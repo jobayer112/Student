@@ -245,13 +245,13 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
           <div className="space-y-4">
             <div className="relative inline-block">
               <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl" />
-              <div className="w-20 h-20 bg-gradient-to-br from-slate-900 to-indigo-900 rounded-3xl flex items-center justify-center mx-auto border border-white/20 p-0.5 relative z-10">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" alt="AI" className="w-full h-full object-cover rounded-2xl" />
+              <div className="w-20 h-20 bg-gradient-to-br from-slate-900 to-indigo-900 rounded-3xl flex items-center justify-center mx-auto border border-white/20 relative z-10">
+                <Lock className="w-8 h-8 text-indigo-400" />
               </div>
             </div>
             <div>
               <h2 className="text-3xl font-display font-bold text-white tracking-tight uppercase">Admin Access</h2>
-              <p className="text-slate-400 mt-2 text-sm">Secure Portal Managed by AI Assistant</p>
+              <p className="text-slate-400 mt-2 text-sm">Secure Administrative Terminal</p>
             </div>
           </div>
 

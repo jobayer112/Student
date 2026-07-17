@@ -10,6 +10,7 @@ import LandingPage from './components/LandingPage';
 import ContributionForm from './components/ContributionForm';
 import SuccessScreen from './components/SuccessScreen';
 import AdminPanel from './components/AdminPanel';
+import InitialLoader from './components/InitialLoader';
 import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
 import { Contribution, Language } from './types';
@@ -20,6 +21,7 @@ type AppState = 'landing' | 'form' | 'success' | 'admin';
 export default function App() {
   const [state, setState] = useState<AppState>('landing');
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [lang, setLang] = useState<Language>('bn');
   const [lastSubmission, setLastSubmission] = useState<Contribution | null>(null);
   const [contributions, setContributions] = useState<Contribution[]>([]);
@@ -94,71 +96,92 @@ export default function App() {
   };
 
   return (
-    <Layout 
-      onLanguageChange={setLang} 
-      onAdminClick={() => setState('admin')} 
-      onLogoClick={() => setState('landing')}
-      currentLang={lang}
-    >
-      <AnimatePresence mode="wait">
-        {state === 'landing' && (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
+    <AnimatePresence mode="wait">
+      {initialLoading ? (
+        <motion.div
+          key="loader"
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <InitialLoader onComplete={() => setInitialLoading(false)} />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="app"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full min-h-screen bg-slate-950 text-white"
+        >
+          <Layout 
+            onLanguageChange={setLang} 
+            onAdminClick={() => setState('admin')} 
+            onLogoClick={() => setState('landing')}
+            currentLang={lang}
           >
-            <LandingPage onStart={() => setState('form')} lang={lang} contributions={contributions} />
-          </motion.div>
-        )}
+            <AnimatePresence mode="wait">
+              {state === 'landing' && (
+                <motion.div
+                  key="landing"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <LandingPage onStart={() => setState('form')} lang={lang} contributions={contributions} />
+                </motion.div>
+              )}
 
-        {state === 'form' && (
-          <motion.div
-            key="form"
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.5 }}
-          >
-            <ContributionForm 
-              onBack={() => setState('landing')} 
-              onSubmit={handleSubmit} 
-              lang={lang} 
-            />
-          </motion.div>
-        )}
+              {state === 'form' && (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <ContributionForm 
+                    onBack={() => setState('landing')} 
+                    onSubmit={handleSubmit} 
+                    lang={lang} 
+                  />
+                </motion.div>
+              )}
 
-        {state === 'success' && (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5 }}
-          >
-            <SuccessScreen 
-              onReset={() => setState('landing')} 
-              lang={lang} 
-              submission={lastSubmission || undefined}
-            />
-          </motion.div>
-        )}
+              {state === 'success' && (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <SuccessScreen 
+                    onReset={() => setState('landing')} 
+                    lang={lang} 
+                    submission={lastSubmission || undefined}
+                  />
+                </motion.div>
+              )}
 
-        {state === 'admin' && (
-          <motion.div
-            key="admin"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full"
-          >
-            <AdminPanel onClose={() => setState('landing')} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </Layout>
+              {state === 'admin' && (
+                <motion.div
+                  key="admin"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-full"
+                >
+                  <AdminPanel onClose={() => setState('landing')} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Layout>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

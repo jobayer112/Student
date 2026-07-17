@@ -211,11 +211,9 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
 
       <div className="space-y-8">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-3 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
-            <div className="w-6 h-6 rounded-lg border border-white/20 p-0.5 bg-gradient-to-br from-slate-900 to-indigo-900">
-               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" alt="AI" className="w-full h-full object-cover rounded-md" />
-            </div>
-            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Verified by AI Assistant</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+            <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Securely Registered</span>
           </div>
           <div className="flex items-center justify-center gap-3 text-pink-500/80 font-display font-bold italic">
             <Heart className="w-5 h-5 fill-current" />

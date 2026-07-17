@@ -84,7 +84,6 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
     });
   };
 
-  const AI_LOGO = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10";
   const SPI_IMAGE = "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-polytechnic-satkhira/2024/12/5f51302a85fd44809961b01184e02303.jpg";
 
   const totalCount = contributions.length;
@@ -129,31 +128,6 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
         <div className="absolute top-[20%] right-[-10%] w-[35%] h-[35%] bg-purple-600/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[20%] w-[30%] h-[30%] bg-emerald-600/10 rounded-full blur-[120px]" />
       </div>
-
-      {/* Floating AI Assistant Button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="fixed bottom-8 left-8 z-50 group"
-      >
-        <div className="relative">
-          <div className="absolute inset-0 bg-blue-500/40 rounded-full blur-xl group-hover:bg-blue-500/60 transition-all" />
-          <div className="relative w-14 h-14 rounded-full border-2 border-white/20 overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-600 to-blue-600 p-0.5">
-            <img 
-              src={AI_LOGO} 
-              alt="AI Assistant" 
-              className="w-full h-full object-cover rounded-full bg-slate-900" 
-              loading="lazy"
-            />
-          </div>
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-950 animate-pulse" />
-        </div>
-        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-slate-900/90 backdrop-blur-md border border-white/10 rounded-xl text-xs font-bold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest shadow-xl">
-          AI Assistant Online
-        </div>
-      </motion.button>
 
       {/* Premium Hero Banner */}
       <motion.div 
