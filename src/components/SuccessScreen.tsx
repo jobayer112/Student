@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Contribution } from '../types';
 import { format } from 'date-fns';
+import { toast } from 'react-hot-toast';
 
 interface SuccessScreenProps {
   onReset: () => void;
@@ -19,6 +20,7 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
       subtitle: "আপনার তথ্য সফলভাবে জমা দেওয়া হয়েছে।",
       cardText: "আপনার অংশগ্রহণ আমাদের বিদায় সংবর্ধনা প্রোগ্রামটিকে আরও সফল করে তুলবে। পরবর্তী আপডেটের জন্য আমাদের সাথে থাকুন।",
       receipt: "রশিদ ডাউনলোড করুন",
+      share: "সহপাঠীদের সাথে শেয়ার করুন",
       home: "হোম পেজ",
       wish: "আপনার সুন্দর ভবিষ্যতের মঙ্গল কামনা করি!"
     },
@@ -27,10 +29,45 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
       subtitle: "Your information has been successfully submitted.",
       cardText: "Your participation will make our farewell ceremony more memorable. Stay tuned for future updates.",
       receipt: "Download Receipt",
+      share: "Share with Classmates",
       home: "Go to Home",
       wish: "Wishing you a bright and successful future!"
     }
   }[lang];
+
+  const handleShare = async () => {
+    const shareUrl = "https://student-regstretion.vercel.app/";
+    const title = lang === 'bn' 
+      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট - বিদায় সংবর্ধনা ২০২৬"
+      : "Satkhira Government Polytechnic Institute - Senior Farewell 2026";
+    const text = lang === 'bn' 
+      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট-এর সিভিল টেকনোলজি বিদায় সংবর্ধনা ২০২৬ এর রেজিস্ট্রেশন ও কন্ট্রিবিউশন ফর্ম। আপনার তথ্য সাবমিট করতে নিচের লিংকে ভিজিট করুন।" 
+      : "Registration and contribution portal for Senior Farewell 2026 of Civil Technology at Satkhira Government Polytechnic Institute. Please register using this link.";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text,
+          url: shareUrl,
+        });
+        toast.success(lang === 'bn' ? 'শেয়ার করা সফল হয়েছে!' : 'Shared successfully!');
+      } catch (err) {
+        // Fallback if shared was cancelled or failed
+        copyToClipboard(shareUrl);
+      }
+    } else {
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success(lang === 'bn' ? 'লিংক কপি করা হয়েছে!' : 'Link copied to clipboard!');
+    }).catch(() => {
+      toast.error(lang === 'bn' ? 'লিংক কপি করতে ব্যর্থ হয়েছে।' : 'Failed to copy link.');
+    });
+  };
 
   const downloadReceipt = () => {
     if (!submission) return;
@@ -162,10 +199,11 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
               </div>
             </button>
             <button 
+              onClick={handleShare}
               className="flex items-center justify-center gap-2 px-8 py-4 glass-card rounded-2xl hover:bg-white/10 transition-all text-sm font-bold"
             >
-              <Share2 className="w-4 h-4" />
-              Share with Classmates
+              <Share2 className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
+              {content.share}
             </button>
           </div>
         </div>

@@ -2,10 +2,11 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { 
   ArrowRight, ShieldCheck, Users, Calendar, 
-  CreditCard, Sparkles, TrendingUp, Info, ChevronRight, ExternalLink
+  CreditCard, Sparkles, TrendingUp, Info, ChevronRight, Share2
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Vortex } from './ui/vortex';
+import { toast } from 'react-hot-toast';
 
 interface LandingPageProps {
   onStart: () => void;
@@ -21,6 +22,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
       tagline: "শিখুন • অনুশীলন করুন • আপনার ক্যারিয়ার গড়ুন",
       desc: "আপনার যাত্রা উদযাপন করতে এবং ভবিষ্যৎ স্মৃতি উজ্জ্বল করতে আজই আপনার অবদান নিশ্চিত করুন।",
       cta: "অবদান শুরু করুন",
+      shareBtn: "সহপাঠীদের সাথে শেয়ার করুন",
       stats: [
         { label: "অবদানের পরিমাণ", value: "১৫০ টাকা", icon: CreditCard, color: "indigo" },
         { label: "মোট অংশগ্রহণকারী", value: "৫০০+", icon: Users, color: "emerald" },
@@ -36,6 +38,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
       tagline: "Learn • Practice • Build Your Career",
       desc: "Secure your contribution today to celebrate your journey and brighten future memories.",
       cta: "Start Contribution",
+      shareBtn: "Share with Classmates",
       stats: [
         { label: "Contribution", value: "150 BDT", icon: CreditCard, color: "indigo" },
         { label: "Participants", value: "500+", icon: Users, color: "emerald" },
@@ -45,6 +48,39 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
       notice: "Warning: Incorrect information will lead to rejection of your submission."
     }
   }[lang];
+
+  const handleShare = async () => {
+    const shareUrl = "https://student-regstretion.vercel.app/";
+    const title = lang === 'bn' 
+      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট - বিদায় সংবর্ধনা ২০২৬"
+      : "Satkhira Government Polytechnic Institute - Senior Farewell 2026";
+    const text = lang === 'bn' 
+      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট-এর সিভিল টেকনোলজি বিদায় সংবর্ধনা ২০২৬ এর রেজিস্ট্রেশন ও কন্ট্রিবিউশন ফর্ম। আপনার তথ্য সাবমিট করতে নিচের লিংকে ভিজিট করুন।" 
+      : "Registration and contribution portal for Senior Farewell 2026 of Civil Technology at Satkhira Government Polytechnic Institute. Please register using this link.";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text,
+          url: shareUrl,
+        });
+        toast.success(lang === 'bn' ? 'শেয়ার করা সফল হয়েছে!' : 'Shared successfully!');
+      } catch (err) {
+        copyToClipboard(shareUrl);
+      }
+    } else {
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success(lang === 'bn' ? 'লিংক কপি করা হয়েছে!' : 'Link copied to clipboard!');
+    }).catch(() => {
+      toast.error(lang === 'bn' ? 'লিংক কপি করতে ব্যর্থ হয়েছে।' : 'Failed to copy link.');
+    });
+  };
 
   const AI_LOGO = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10";
   const SPI_IMAGE = "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-polytechnic-satkhira/2024/12/5f51302a85fd44809961b01184e02303.jpg";
@@ -136,15 +172,22 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="mt-12"
+            className="mt-12 flex flex-col sm:flex-row items-center gap-4 justify-center relative z-30"
           >
             <button 
               onClick={onStart}
-              className="relative group px-12 py-5 bg-white text-slate-950 rounded-2xl font-black text-lg transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-white/10 flex items-center gap-3"
+              className="relative group px-10 py-4.5 bg-white text-slate-950 rounded-2xl font-black text-base transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-white/10 flex items-center gap-2.5 cursor-pointer"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
               {content.cta}
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button 
+              onClick={handleShare}
+              className="relative group px-10 py-4.5 bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-white/25 text-white rounded-2xl font-black text-base transition-all hover:scale-105 active:scale-95 hover:bg-slate-900/60 flex items-center gap-2.5 cursor-pointer"
+            >
+              <Share2 className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+              {content.shareBtn}
             </button>
           </motion.div>
         </div>
@@ -191,7 +234,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
         </div>
 
         <div className="lg:w-1/2 w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+          <div className="grid grid-cols-2 gap-4 w-full">
             <div className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-white/5 bg-white/5 group hover:bg-white/10 transition-all">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 md:mb-6">
                 <CreditCard className="w-5 h-5 md:w-6 md:h-6" />
@@ -206,24 +249,6 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
               <p className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1 md:mb-2">Event</p>
               <p className="text-xl md:text-2xl font-bold text-white tracking-tight">Farewell</p>
             </div>
-            <a 
-              href="https://student-regstretion.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-indigo-500/10 bg-indigo-500/5 hover:bg-indigo-500/15 transition-all block relative group overflow-hidden text-left"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 md:mb-6">
-                <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
-              </div>
-              <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1 md:mb-2">
-                {lang === 'bn' ? 'স্টুডেন্ট পোর্টাল' : 'Student Portal'}
-              </p>
-              <p className="text-sm font-bold text-white tracking-tight flex items-center gap-1 mt-1">
-                <span>{lang === 'bn' ? 'রেজিস্ট্রেশন লিংক' : 'Reg Link'}</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </p>
-            </a>
           </div>
         </div>
       </div>

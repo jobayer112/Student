@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Toaster } from 'react-hot-toast';
-import { Globe, ShieldCheck, ChevronRight, Menu, X, ExternalLink } from 'lucide-react';
+import { Globe, ShieldCheck, ChevronRight, Menu, X } from 'lucide-react';
 import { Language } from '../types';
 
 interface LayoutProps {
@@ -61,16 +61,6 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
           </div>
 
           <div className="flex items-center gap-4 md:gap-8">
-            <a 
-              href="https://student-regstretion.vercel.app/"
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3.5 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 hover:border-indigo-500/40 rounded-2xl transition-all group text-xs font-black text-indigo-300 uppercase tracking-wider shadow-lg shadow-indigo-500/5"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
-              <span>{currentLang === 'bn' ? 'স্টুডেন্ট রেজিস্ট্রেশন' : 'Student Reg'}</span>
-            </a>
-
             <button 
               onClick={() => onLanguageChange?.(currentLang === 'bn' ? 'en' : 'bn')}
               className="flex items-center gap-3 px-4 py-2 glass-card hover:bg-white/10 rounded-2xl transition-all group text-xs md:text-sm font-black text-white uppercase tracking-widest"
