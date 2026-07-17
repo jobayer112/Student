@@ -5,6 +5,7 @@ import {
   CreditCard, Sparkles, TrendingUp, Info, ChevronRight
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Vortex } from './ui/vortex';
 
 interface LandingPageProps {
   onStart: () => void;
@@ -240,6 +241,47 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
           </motion.div>
         ))}
       </div>
+
+      {/* Interactive Digital Space Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="w-full rounded-[2.5rem] overflow-hidden h-[400px] md:h-[500px] relative border border-white/5 shadow-2xl bg-black"
+      >
+        <Vortex
+          backgroundColor="#020617"
+          rangeY={150}
+          particleCount={250}
+          className="flex items-center flex-col justify-center px-4 md:px-10 py-12 w-full h-full"
+        >
+          <Sparkles className="w-8 h-8 text-indigo-400 mb-4 animate-pulse" />
+          <h2 className="text-white text-2xl md:text-5xl font-display font-black text-center tracking-tight">
+            {lang === 'en' ? 'Interactive Digital Space' : 'ইন্টারেক্টিভ ডিজিটাল স্পেস'}
+          </h2>
+          <p className="text-slate-400 text-xs md:text-sm max-w-lg mt-4 text-center leading-relaxed">
+            {lang === 'en' 
+              ? 'Experience the flow of modern tech. Drag, hover, and explore our high-speed particle system designed for digital innovation at Satkhira Polytechnic Institute.'
+              : 'আধুনিক প্রযুক্তির প্রবাহ অনুভব করুন। সাতক্ষীরা পলিটেকনিক ইনস্টিটিউটের ডিজিটাল উদ্ভাবনের জন্য ডিজাইন করা আমাদের হাই-স্পিড পার্টিকেল সিস্টেমটি অন্বেষণ করুন।'}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
+            <button 
+              onClick={onStart}
+              className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition duration-200 active:scale-95 shadow-lg shadow-indigo-500/20"
+            >
+              {lang === 'en' ? 'Start Contribution' : 'অবদান শুরু করুন'}
+            </button>
+            <a 
+              href="https://wa.me/8801832313998?text=Hello%20SPI%20Portal%20Support!%20I%20need%20assistance%20regarding%20the%20Senior%20Farewell%20contribution." 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="px-6 py-3 text-white border border-white/10 hover:bg-white/5 transition duration-200 rounded-xl font-bold text-xs uppercase tracking-widest"
+            >
+              {lang === 'en' ? 'Get Support' : 'সাপোর্ট নিন'}
+            </a>
+          </div>
+        </Vortex>
+      </motion.div>
 
       {/* Notice Bar */}
       <motion.div 
