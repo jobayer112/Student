@@ -3,7 +3,10 @@ import { getFirestore } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, (firebaseConfig as any).firestoreDatabaseId);
+const dbId = (firebaseConfig as any).firestoreDatabaseId && (firebaseConfig as any).firestoreDatabaseId !== '(default)'
+  ? (firebaseConfig as any).firestoreDatabaseId
+  : undefined;
+export const db = dbId ? getFirestore(app, dbId) : getFirestore(app);
 
 export enum OperationType {
   CREATE = 'create',
