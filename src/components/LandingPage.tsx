@@ -15,7 +15,7 @@ interface LandingPageProps {
 export default function LandingPage({ onStart, lang }: LandingPageProps) {
   const content = {
     bn: {
-      title: "সাতক্ষীরা পলিটেকনিক ইনস্টিটিউট",
+      title: "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট",
       year: "২০২৬",
       subtitle: "সিভিল টেকনোলজি ডিজিটাল প্ল্যাটফর্ম",
       tagline: "শিখুন • অনুশীলন করুন • আপনার ক্যারিয়ার গড়ুন",
@@ -30,7 +30,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
       notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।"
     },
     en: {
-      title: "Satkhira Polytechnic Institute",
+      title: "Satkhira Government Polytechnic Institute",
       year: "2026",
       subtitle: "Civil Technology Digital Platform",
       tagline: "Learn • Practice • Build Your Career",
@@ -261,8 +261,8 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
           </h2>
           <p className="text-slate-400 text-xs md:text-sm max-w-lg mt-4 text-center leading-relaxed">
             {lang === 'en' 
-              ? 'Experience the flow of modern tech. Drag, hover, and explore our high-speed particle system designed for digital innovation at Satkhira Polytechnic Institute.'
-              : 'আধুনিক প্রযুক্তির প্রবাহ অনুভব করুন। সাতক্ষীরা পলিটেকনিক ইনস্টিটিউটের ডিজিটাল উদ্ভাবনের জন্য ডিজাইন করা আমাদের হাই-স্পিড পার্টিকেল সিস্টেমটি অন্বেষণ করুন।'}
+              ? 'Experience the flow of modern tech. Drag, hover, and explore our high-speed particle system designed for digital innovation at Satkhira Government Polytechnic Institute.'
+              : 'আধুনিক প্রযুক্তির প্রবাহ অনুভব করুন। সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউটের ডিজিটাল উদ্ভাবনের জন্য ডিজাইন করা আমাদের হাই-স্পিড পার্টিকেল সিস্টেমটি অন্বেষণ করুন।'}
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
             <button 

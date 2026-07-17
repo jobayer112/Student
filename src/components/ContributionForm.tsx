@@ -176,6 +176,46 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
         ))}
       </div>
 
+      {/* Warning Alert Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-5 rounded-3xl border border-amber-500/20 bg-amber-500/10 text-amber-200 flex items-start gap-4 shadow-lg shadow-amber-500/5 relative z-10"
+      >
+        <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5 animate-pulse" />
+        <div className="space-y-1">
+          <p className="text-xs md:text-sm font-semibold leading-relaxed">
+            {lang === 'bn' ? (
+              <>
+                <strong>সতর্কতা:</strong> ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না। কোনো সমস্যা হলে অনুগ্রহ করে{' '}
+                <a 
+                  href="https://wa.me/8801832313998?text=Hello%20SPI%20Portal%20Support!%20I%20need%20assistance%20regarding%20the%20Senior%20Farewell%20contribution."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-amber-400 hover:text-amber-300 transition-colors font-bold inline-flex items-center gap-1"
+                >
+                  Contact Support
+                </a>
+                -এ যোগাযোগ করুন।
+              </>
+            ) : (
+              <>
+                <strong>Warning:</strong> Providing incorrect information will make your application invalid. If you face any issues, please contact{' '}
+                <a 
+                  href="https://wa.me/8801832313998?text=Hello%20SPI%20Portal%20Support!%20I%20need%20assistance%20regarding%20the%20Senior%20Farewell%20contribution."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-amber-400 hover:text-amber-300 transition-colors font-bold inline-flex items-center gap-1"
+                >
+                  Contact Support
+                </a>
+                .
+              </>
+            )}
+          </p>
+        </div>
+      </motion.div>
+
       <div className="glass-card rounded-[2.5rem] p-8 md:p-12 glow-indigo relative overflow-hidden bg-gradient-to-tr from-indigo-600/5 to-purple-600/5">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
