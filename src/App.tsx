@@ -11,12 +11,13 @@ import ContributionForm from './components/ContributionForm';
 import SuccessScreen from './components/SuccessScreen';
 import AdminPanel from './components/AdminPanel';
 import InitialLoader from './components/InitialLoader';
+import FarewellRegistration from './components/FarewellRegistration';
 import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
 import { Contribution, Language } from './types';
 import toast from 'react-hot-toast';
 
-type AppState = 'landing' | 'form' | 'success' | 'admin';
+type AppState = 'landing' | 'form' | 'success' | 'admin' | 'farewell-form';
 
 export default function App() {
   const [state, setState] = useState<AppState>('landing');
@@ -129,7 +130,12 @@ export default function App() {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <LandingPage onStart={() => setState('form')} lang={lang} contributions={contributions} />
+                  <LandingPage 
+                    onStart={() => setState('form')} 
+                    onFarewell={() => setState('farewell-form')}
+                    lang={lang} 
+                    contributions={contributions} 
+                  />
                 </motion.div>
               )}
 
@@ -144,6 +150,22 @@ export default function App() {
                   <ContributionForm 
                     onBack={() => setState('landing')} 
                     onSubmit={handleSubmit} 
+                    lang={lang} 
+                  />
+                </motion.div>
+              )}
+
+              {state === 'farewell-form' && (
+                <motion.div
+                  key="farewell-form"
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -100 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <FarewellRegistration 
+                    onBack={() => setState('landing')} 
+                    onSuccess={() => setState('success')} 
                     lang={lang} 
                   />
                 </motion.div>

@@ -28,6 +28,28 @@ export interface Contribution {
   };
 }
 
+export interface FarewellStudent {
+  id?: string;
+  fullName: string;
+  rollNumber: string;
+  registrationNumber?: string;
+  department: Department;
+  semester: Semester;
+  shift: Shift;
+  academicSession: string;
+  mobileNumber: string;
+  email?: string;
+  willAttend: 'Yes' | 'No';
+  remarks?: string;
+  submissionId: string;
+  createdAt: string;
+  metadata: {
+    ip?: string;
+    device: string;
+    browser: string;
+  };
+}
+
 export type Language = 'bn' | 'en';
 
 export interface AdminStats {
@@ -38,4 +60,11 @@ export interface AdminStats {
   byDepartment: Record<string, number>;
   bySemester: Record<string, number>;
   recentActivity: Contribution[];
+  farewellStats?: {
+    total: number;
+    attending: number;
+    notAttending: number;
+    byDepartment: Record<string, number>;
+    bySemester: Record<string, number>;
+  };
 }

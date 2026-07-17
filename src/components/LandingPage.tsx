@@ -11,11 +11,12 @@ import { Contribution } from '../types';
 
 interface LandingPageProps {
   onStart: () => void;
+  onFarewell: () => void;
   lang: 'bn' | 'en';
   contributions: Contribution[];
 }
 
-export default function LandingPage({ onStart, lang, contributions }: LandingPageProps) {
+export default function LandingPage({ onStart, onFarewell, lang, contributions }: LandingPageProps) {
   const content = {
     bn: {
       title: "বিদায় সংবর্ধনা ২০২৬",
@@ -31,7 +32,11 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
         { label: "শেষ তারিখ", value: "২৫ জুলাই, ২০২৬", icon: Calendar, color: "amber" },
         { label: "পেমেন্ট স্ট্যাটাস", value: "সুরক্ষিত", icon: ShieldCheck, color: "purple" }
       ],
-      notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।"
+      notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।",
+      farewellTitle: "🎓 বিদায়ী শিক্ষার্থীদের তথ্য",
+      farewellSubtitle: "Outgoing Students Registration",
+      farewellInfo: "শুধুমাত্র বিদায়ী শিক্ষার্থীদের জন্য। আপনারা কোনো চাঁদা প্রদান করবেন না।",
+      farewellCta: "রেজিস্ট্রেশন করুন"
     },
     en: {
       title: "Farewell Celebration 2026",
@@ -47,7 +52,11 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
         { label: "Deadline", value: "25 July, 2026", icon: Calendar, color: "amber" },
         { label: "Security", value: "Verified", icon: ShieldCheck, color: "purple" }
       ],
-      notice: "Warning: Incorrect information will lead to rejection of your submission."
+      notice: "Warning: Incorrect information will lead to rejection of your submission.",
+      farewellTitle: "🎓 Farewell Registration",
+      farewellSubtitle: "Outgoing Students Registration",
+      farewellInfo: "Only for Graduating students. No contribution required.",
+      farewellCta: "Register Now"
     }
   }[lang];
 
@@ -274,36 +283,66 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {dynamicStats.map((stat, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 * idx }}
-            className="glass-card p-8 rounded-[2rem] group hover:bg-white/[0.08] transition-all relative overflow-hidden"
-          >
-            <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity bg-gradient-to-br", 
-              stat.color === 'indigo' ? "from-indigo-500" : 
-              stat.color === 'emerald' ? "from-emerald-500" : 
-              stat.color === 'amber' ? "from-amber-500" : "from-purple-500"
-            )} />
-            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all shadow-lg",
-              stat.color === 'indigo' ? "bg-indigo-500/10" : 
-              stat.color === 'emerald' ? "bg-emerald-500/10" : 
-              stat.color === 'amber' ? "bg-amber-500/10" : "bg-purple-500/10"
-            )}>
-              <stat.icon className={cn("w-7 h-7", 
-                stat.color === 'indigo' ? "text-indigo-400" : 
-                stat.color === 'emerald' ? "text-emerald-400" : 
-                stat.color === 'amber' ? "text-amber-400" : "text-purple-400"
+      {/* Main Stats and Farewell Card */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10">
+        {/* Left: Stats Grid (Lg: 8 cols) */}
+        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {dynamicStats.map((stat, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * idx }}
+              className="glass-card p-8 rounded-[2rem] group hover:bg-white/[0.08] transition-all relative overflow-hidden"
+            >
+              <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity bg-gradient-to-br", 
+                stat.color === 'indigo' ? "from-indigo-500" : 
+                stat.color === 'emerald' ? "from-emerald-500" : 
+                stat.color === 'amber' ? "from-amber-500" : "from-purple-500"
               )} />
+              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all shadow-lg",
+                stat.color === 'indigo' ? "bg-indigo-500/10" : 
+                stat.color === 'emerald' ? "bg-emerald-500/10" : 
+                stat.color === 'amber' ? "bg-amber-500/10" : "bg-purple-500/10"
+              )}>
+                <stat.icon className={cn("w-7 h-7", 
+                  stat.color === 'indigo' ? "text-indigo-400" : 
+                  stat.color === 'emerald' ? "text-emerald-400" : 
+                  stat.color === 'amber' ? "text-amber-400" : "text-purple-400"
+                )} />
+              </div>
+              <p className="text-slate-300 text-sm font-semibold uppercase tracking-widest mb-2">{stat.label}</p>
+              <h3 className="text-2xl font-bold text-white tracking-tight">{stat.value}</h3>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Right: Farewell Registration (Lg: 4 cols) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4 }}
+          className="lg:col-span-4 p-8 md:p-10 glass-card rounded-[2rem] md:rounded-[2.5rem] border-indigo-500/30 bg-indigo-500/5 glow-indigo border flex flex-col justify-between"
+        >
+          <div>
+            <div className="w-16 h-16 rounded-3xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 mb-8">
+              <Sparkles className="w-8 h-8 animate-pulse" />
             </div>
-            <p className="text-slate-300 text-sm font-semibold uppercase tracking-widest mb-2">{stat.label}</p>
-            <h3 className="text-2xl font-bold text-white tracking-tight">{stat.value}</h3>
-          </motion.div>
-        ))}
+            <h3 className="text-2xl font-bold text-white mb-2">{(content as any).farewellTitle}</h3>
+            <p className="text-indigo-400 text-xs font-black uppercase tracking-widest mb-4">{(content as any).farewellSubtitle}</p>
+            <p className="text-slate-300 text-sm leading-relaxed font-medium mb-8">
+              {(content as any).farewellInfo}
+            </p>
+          </div>
+          
+          <button 
+            onClick={onFarewell}
+            className="w-full btn-primary py-5 group flex items-center justify-center gap-3 text-lg"
+          >
+            {(content as any).farewellCta}
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </motion.div>
       </div>
 
       {/* Live Activity Feed */}
