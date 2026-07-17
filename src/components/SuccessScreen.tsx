@@ -36,7 +36,7 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
   }[lang];
 
   const handleShare = async () => {
-    const shareUrl = "https://student-regstretion.vercel.app/";
+    const shareUrl = window.location.origin;
     const title = lang === 'bn' 
       ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট - বিদায় সংবর্ধনা ২০২৬"
       : "Satkhira Government Polytechnic Institute - Senior Farewell 2026";

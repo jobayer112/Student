@@ -7,13 +7,15 @@ import {
 import { cn } from '../lib/utils';
 import { Vortex } from './ui/vortex';
 import { toast } from 'react-hot-toast';
+import { Contribution } from '../types';
 
 interface LandingPageProps {
   onStart: () => void;
   lang: 'bn' | 'en';
+  contributions: Contribution[];
 }
 
-export default function LandingPage({ onStart, lang }: LandingPageProps) {
+export default function LandingPage({ onStart, lang, contributions }: LandingPageProps) {
   const content = {
     bn: {
       title: "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট",
@@ -50,7 +52,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
   }[lang];
 
   const handleShare = async () => {
-    const shareUrl = "https://student-regstretion.vercel.app/";
+    const shareUrl = window.location.origin;
     const title = lang === 'bn' 
       ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট - বিদায় সংবর্ধনা ২০২৬"
       : "Satkhira Government Polytechnic Institute - Senior Farewell 2026";
@@ -84,6 +86,40 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
 
   const AI_LOGO = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10";
   const SPI_IMAGE = "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-polytechnic-satkhira/2024/12/5f51302a85fd44809961b01184e02303.jpg";
+
+  const totalCount = contributions.length;
+  const verifiedCount = contributions.filter(c => c.paymentStatus === 'Verified').length;
+  const pendingCount = contributions.filter(c => c.paymentStatus === 'Pending').length;
+  const totalAmount = verifiedCount * 150;
+
+  const dynamicStats = [
+    { 
+      label: lang === 'bn' ? "মোট নিবন্ধিত ছাত্র-ছাত্রী" : "Total Registered", 
+      value: lang === 'bn' ? `${totalCount} জন` : `${totalCount} Students`, 
+      icon: Users, 
+      color: "indigo" 
+    },
+    { 
+      label: lang === 'bn' ? "পেমেন্ট সম্পন্ন" : "Verified Payments", 
+      value: lang === 'bn' ? `${verifiedCount} জন` : `${verifiedCount} Paid`, 
+      icon: ShieldCheck, 
+      color: "emerald" 
+    },
+    { 
+      label: lang === 'bn' ? "অপেক্ষমাণ ভেরিফিকেশন" : "Pending Verification", 
+      value: lang === 'bn' ? `${pendingCount} জন` : `${pendingCount} Pending`, 
+      icon: Calendar, 
+      color: "amber" 
+    },
+    { 
+      label: lang === 'bn' ? "সংগৃহীত মোট ফান্ড" : "Total Funds Collected", 
+      value: lang === 'bn' ? `${totalAmount} টাকা` : `${totalAmount} BDT`, 
+      icon: CreditCard, 
+      color: "purple" 
+    }
+  ];
+
+  const lastThreeNames = contributions.slice(0, 3).map(c => c.fullName);
 
   return (
     <div className="space-y-16 relative">
@@ -218,17 +254,28 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
 
           <div className="flex items-center gap-4 px-6 py-4 glass-card rounded-2xl border-white/5 bg-white/5">
             <div className="flex -space-x-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className={cn(
-                  "w-8 h-8 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-bold text-white shadow-lg",
-                  i === 1 ? "bg-indigo-500" : i === 2 ? "bg-purple-500" : "bg-emerald-500"
-                )}>
-                  {String.fromCharCode(64 + i)}
-                </div>
-              ))}
+              {lastThreeNames.length > 0 ? (
+                lastThreeNames.map((name, i) => (
+                  <div key={i} className={cn(
+                    "w-8 h-8 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-extrabold text-white shadow-lg uppercase",
+                    i === 0 ? "bg-indigo-500" : i === 1 ? "bg-purple-500" : "bg-emerald-500"
+                  )}>
+                    {name.charAt(0)}
+                  </div>
+                ))
+              ) : (
+                [1, 2, 3].map((i) => (
+                  <div key={i} className={cn(
+                    "w-8 h-8 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-bold text-white shadow-lg",
+                    i === 1 ? "bg-indigo-500" : i === 2 ? "bg-purple-500" : "bg-emerald-500"
+                  )}>
+                    {String.fromCharCode(64 + i)}
+                  </div>
+                ))
+              )}
             </div>
             <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-              <span className="text-white">+200</span> Participants Joined
+              <span className="text-white">+{totalCount}</span> {lang === 'bn' ? 'জন সহপাঠী যুক্ত হয়েছে' : 'Classmates Joined'}
             </div>
           </div>
         </div>
@@ -255,7 +302,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {content.stats.map((stat, idx) => (
+        {dynamicStats.map((stat, idx) => (
           <motion.div
             key={idx}
             initial={{ opacity: 0, y: 20 }}
@@ -283,6 +330,111 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
             <h3 className="text-2xl font-bold text-white tracking-tight">{stat.value}</h3>
           </motion.div>
         ))}
+      </div>
+
+      {/* Live Activity Feed */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+            </span>
+            <h2 className="text-xl md:text-2xl font-display font-extrabold tracking-tight text-white">
+              {lang === 'bn' ? 'লাইভ রেজিস্ট্রেশন ফিড' : 'Live Registration Feed'}
+            </h2>
+          </div>
+          <p className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full uppercase tracking-widest">
+            {lang === 'bn' ? 'রিয়েল-টাইম আপডেট' : 'Real-time updates'}
+          </p>
+        </div>
+
+        <div className="glass-card rounded-[2.5rem] border-white/5 bg-white/5 overflow-hidden p-6 md:p-8">
+          {contributions.length === 0 ? (
+            <div className="text-center py-12 text-slate-400 text-sm">
+              {lang === 'bn' ? 'এখনো কোনো রেজিস্ট্রেশন হয়নি। প্রথম রেজিস্ট্রেশন করতে "অবদান শুরু করুন" বাটনে ক্লিক করুন!' : 'No registrations yet. Click "Start Contribution" to be the first!'}
+            </div>
+          ) : (
+            <div className="divide-y divide-white/5 space-y-4">
+              {contributions.slice(0, 5).map((item, idx) => {
+                const maskRoll = (roll: string) => {
+                  if (!roll) return '';
+                  if (roll.length <= 3) return roll;
+                  return roll.substring(0, 2) + '***' + roll.substring(roll.length - 1);
+                };
+                
+                const getInitials = (fullName: string) => {
+                  const parts = fullName.trim().split(' ');
+                  if (parts.length === 0) return 'ST';
+                  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+                  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                };
+
+                const initials = getInitials(item.fullName);
+                
+                const formattedDate = () => {
+                  try {
+                    const date = new Date(item.createdAt);
+                    return date.toLocaleTimeString(lang === 'bn' ? 'bn-BD' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                  } catch (e) {
+                    return '';
+                  }
+                };
+
+                return (
+                  <motion.div
+                    key={item.id || idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 first:pt-0"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-300 font-extrabold text-sm tracking-wider shadow-lg shrink-0">
+                        {initials}
+                      </div>
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="text-white font-bold text-base">{item.fullName}</h4>
+                          <span className="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded-md border border-white/5">
+                            Roll: {maskRoll(item.rollNumber)}
+                          </span>
+                        </div>
+                        <p className="text-slate-400 text-xs mt-1">
+                          {item.department} ({item.shift === '1st' ? (lang === 'bn' ? '১ম শিফট' : '1st Shift') : (lang === 'bn' ? '২য় শিফট' : '2nd Shift')}) • {lang === 'bn' ? `${item.semester} পর্ব` : `${item.semester} Semester`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-6 shrink-0">
+                      <div className="text-left">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                          {lang === 'bn' ? 'দাখিলকৃত সময়' : 'Submitted at'}
+                        </p>
+                        <p className="text-slate-300 text-xs font-medium font-mono mt-0.5">{formattedDate()}</p>
+                      </div>
+
+                      <div className={cn(
+                        "px-3.5 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg",
+                        item.paymentStatus === 'Verified' 
+                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 shadow-emerald-500/5"
+                          : "bg-amber-500/10 text-amber-400 border border-amber-500/25 shadow-amber-500/5 animate-pulse"
+                      )}>
+                        <span className={cn(
+                          "w-1.5 h-1.5 rounded-full",
+                          item.paymentStatus === 'Verified' ? "bg-emerald-400 animate-pulse" : "bg-amber-400 animate-pulse"
+                        )} />
+                        {item.paymentStatus === 'Verified' 
+                          ? (lang === 'bn' ? 'অনুমোদিত' : 'Verified') 
+                          : (lang === 'bn' ? 'যাচাইাধীন' : 'Pending')}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Interactive Digital Space Section */}

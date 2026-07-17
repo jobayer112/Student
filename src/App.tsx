@@ -10,7 +10,7 @@ import LandingPage from './components/LandingPage';
 import ContributionForm from './components/ContributionForm';
 import SuccessScreen from './components/SuccessScreen';
 import AdminPanel from './components/AdminPanel';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
 import { Contribution, Language } from './types';
 import toast from 'react-hot-toast';
@@ -22,6 +22,21 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [lang, setLang] = useState<Language>('bn');
   const [lastSubmission, setLastSubmission] = useState<Contribution | null>(null);
+  const [contributions, setContributions] = useState<Contribution[]>([]);
+
+  React.useEffect(() => {
+    const q = query(collection(db, 'contributions'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const list: Contribution[] = [];
+      snapshot.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() } as Contribution);
+      });
+      setContributions(list);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'contributions');
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleSubmit = async (formData: any) => {
     setIsLoading(true);
@@ -94,7 +109,7 @@ export default function App() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            <LandingPage onStart={() => setState('form')} lang={lang} />
+            <LandingPage onStart={() => setState('form')} lang={lang} contributions={contributions} />
           </motion.div>
         )}
 
