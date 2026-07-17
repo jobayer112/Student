@@ -14,6 +14,8 @@ import {
 } from 'recharts';
 import { Contribution, AdminStats, Language } from '../types';
 import { cn } from '../lib/utils';
+import { collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
@@ -65,31 +67,19 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
     }
   };
 
-  const fetchData = async (authToken: string) => {
+  const fetchData = async (authToken?: string) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/contributions', {
-        headers: { 'Authorization': authToken },
+      const q = query(collection(db, 'contributions'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      const list: Contribution[] = [];
+      snapshot.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() } as Contribution);
       });
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error('Server error response:', errorText);
-        toast.error(`সার্ভার ত্রুটি: ${res.status}`);
-        return;
-      }
-
-      const result = await res.json();
-      if (Array.isArray(result)) {
-        setData(result);
-      } else {
-        console.error('Error fetching data:', result);
-        setData([]);
-        toast.error(`ডাটা লোড করতে ব্যর্থ হয়েছে: ${result.error || 'Unknown error'}`);
-      }
+      setData(list);
     } catch (err: any) {
       console.error('Fetch error:', err);
-      toast.error('সার্ভার সংযোগে সমস্যা হয়েছে।');
+      toast.error('ডাটা লোড করতে ব্যর্থ হয়েছে।');
       setData([]);
     } finally {
       setLoading(false);
@@ -99,10 +89,7 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
   const handleDelete = async (id: string) => {
     if (!confirm('আপনি কি নিশ্চিত যে এই তথ্যটি মুছে ফেলতে চান?')) return;
     try {
-      await fetch(`/api/admin/contributions/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': token! },
-      });
+      await deleteDoc(doc(db, 'contributions', id));
       setData(prev => prev.filter(item => item.id !== id));
       toast.success('তথ্যটি মুছে ফেলা হয়েছে');
     } catch (err) {
@@ -113,13 +100,9 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
   const handleUpdateStatus = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === 'Verified' ? 'Pending' : 'Verified';
     try {
-      await fetch(`/api/admin/contributions/${id}`, {
-        method: 'PUT',
-        headers: { 
-          'Authorization': token!,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ paymentStatus: newStatus }),
+      await updateDoc(doc(db, 'contributions', id), {
+        paymentStatus: newStatus,
+        updatedAt: new Date().toISOString()
       });
       setData(prev => prev.map(item => item.id === id ? { ...item, paymentStatus: newStatus as any } : item));
       toast.success(`স্ট্যাটাস ${newStatus === 'Verified' ? 'Verified' : 'Pending'} করা হয়েছে`);
@@ -132,33 +115,25 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
     e.preventDefault();
     setLoading(true);
     try {
-      const url = editingItem 
-        ? `/api/admin/contributions/${editingItem.id}` 
-        : '/api/admin/contributions';
-      
-      const method = editingItem ? 'PUT' : 'POST';
-      
-      const res = await fetch(url, {
-        method,
-        headers: { 
-          'Authorization': token!,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(modalData),
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        toast.success(editingItem ? 'তথ্য আপডেট করা হয়েছে' : 'নতুন তথ্য যুক্ত করা হয়েছে');
-        fetchData(token!);
-        setIsModalOpen(false);
-        setEditingItem(null);
-        setModalData({});
+      if (editingItem) {
+        await updateDoc(doc(db, 'contributions', editingItem.id), {
+          ...modalData,
+          updatedAt: new Date().toISOString()
+        });
+        toast.success('তথ্য আপডেট করা হয়েছে');
       } else {
-        toast.error(result.message || 'সেভ করা সম্ভব হয়নি।');
+        await addDoc(collection(db, 'contributions'), {
+          ...modalData,
+          createdAt: new Date().toISOString()
+        });
+        toast.success('নতুন তথ্য যুক্ত করা হয়েছে');
       }
+      fetchData(token!);
+      setIsModalOpen(false);
+      setEditingItem(null);
+      setModalData({});
     } catch (err) {
-      toast.error('সার্ভার ত্রুটি।');
+      toast.error('সেভ করা সম্ভব হয়নি।');
     } finally {
       setLoading(false);
     }
