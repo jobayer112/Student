@@ -100,7 +100,7 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
             
             <div className="flex items-center gap-8">
               <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Contact Support</a>
+              <a href="https://wa.me/8801832313998?text=Hello%20SPI%20Portal%20Support!%20I%20need%20assistance%20regarding%20the%20Senior%20Farewell%20contribution." target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Support</a>
             </div>
           </div>
         </div>
