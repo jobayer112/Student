@@ -1,24 +1,34 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import { initializeApp, getApps } from 'firebase-admin/app';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
 import firebaseConfig from './firebase-applet-config.json';
 
-const app = express();
-const PORT = 3000;
+export const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
 // Initialize Firebase Admin
 if (getApps().length === 0) {
   try {
-    // Try to initialize without explicit config to use environment defaults (ADC)
-    initializeApp();
-    console.log('Firebase Admin initialized with default credentials');
+    const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (serviceAccount) {
+      const config = JSON.parse(serviceAccount);
+      initializeApp({
+        credential: cert(config),
+        projectId: firebaseConfig.projectId
+      });
+      console.log('Firebase Admin initialized with service account from env');
+    } else {
+      // Try default initialization
+      initializeApp();
+      console.log('Firebase Admin initialized with default credentials');
+    }
   } catch (error) {
-    console.log('Default initialization failed, using explicit projectId');
+    console.log('Fallback initialization using explicit projectId');
     initializeApp({
       projectId: firebaseConfig.projectId
     });

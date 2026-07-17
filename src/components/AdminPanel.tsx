@@ -71,6 +71,14 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
       const res = await fetch('/api/admin/contributions', {
         headers: { 'Authorization': authToken },
       });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Server error response:', errorText);
+        toast.error(`সার্ভার ত্রুটি: ${res.status}`);
+        return;
+      }
+
       const result = await res.json();
       if (Array.isArray(result)) {
         setData(result);
@@ -79,8 +87,9 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
         setData([]);
         toast.error(`ডাটা লোড করতে ব্যর্থ হয়েছে: ${result.error || 'Unknown error'}`);
       }
-    } catch (err) {
-      toast.error('ডাটা লোড করতে ব্যর্থ হয়েছে।');
+    } catch (err: any) {
+      console.error('Fetch error:', err);
+      toast.error('সার্ভার সংযোগে সমস্যা হয়েছে।');
       setData([]);
     } finally {
       setLoading(false);
@@ -547,6 +556,24 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
                       className="glass-input w-full"
                       value={modalData.rollNumber || ''}
                       onChange={e => setModalData({...modalData, rollNumber: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Registration Number</label>
+                    <input 
+                      type="text" 
+                      className="glass-input w-full"
+                      value={modalData.registrationNumber || ''}
+                      onChange={e => setModalData({...modalData, registrationNumber: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Email Address</label>
+                    <input 
+                      type="email" 
+                      className="glass-input w-full"
+                      value={modalData.email || ''}
+                      onChange={e => setModalData({...modalData, email: e.target.value})}
                     />
                   </div>
                   <div className="space-y-2">

@@ -2,7 +2,7 @@ export type Department = 'Computer' | 'Electronics' | 'Electrical' | 'Civil' | '
 export type Semester = '1st' | '2nd' | '3rd' | '4th' | '5th' | '6th' | '7th' | '8th';
 export type Shift = '1st' | '2nd';
 export type PaymentMethod = 'Cash' | 'bKash' | 'Nagad' | 'Rocket';
-export type PaymentStatus = 'Paid' | 'Pending';
+export type PaymentStatus = 'Verified' | 'Pending';
 
 export interface Contribution {
   id?: string;
