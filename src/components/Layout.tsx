@@ -82,9 +82,9 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
 
       <footer className="relative z-10 border-t border-white/5 bg-slate-950/50 backdrop-blur-lg">
         <div className="container mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs md:text-sm font-medium">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-slate-300 text-xs md:text-sm font-semibold">
             <div className="text-center md:text-left">
-              <p className="text-slate-400 mb-1">
+              <p className="text-slate-200 mb-1">
                 <button 
                   onClick={onAdminClick}
                   className="hover:text-white transition-colors cursor-default"

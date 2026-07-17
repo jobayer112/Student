@@ -18,10 +18,10 @@ interface LandingPageProps {
 export default function LandingPage({ onStart, lang, contributions }: LandingPageProps) {
   const content = {
     bn: {
-      title: "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট",
+      title: "বিদায় সংবর্ধনা ২০২৬",
       year: "২০২৬",
-      subtitle: "সিভিল টেকনোলজি ডিজিটাল প্ল্যাটফর্ম",
-      tagline: "শিখুন • অনুশীলন করুন • আপনার ক্যারিয়ার গড়ুন",
+      subtitle: "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট",
+      tagline: "সিভিল টেকনোলজি • ব্যাচ ২২-২৩",
       desc: "আপনার যাত্রা উদযাপন করতে এবং ভবিষ্যৎ স্মৃতি উজ্জ্বল করতে আজই আপনার অবদান নিশ্চিত করুন।",
       cta: "অবদান শুরু করুন",
       shareBtn: "সহপাঠীদের সাথে শেয়ার করুন",
@@ -34,10 +34,10 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
       notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।"
     },
     en: {
-      title: "Satkhira Government Polytechnic Institute",
+      title: "Farewell Celebration 2026",
       year: "2026",
-      subtitle: "Civil Technology Digital Platform",
-      tagline: "Learn • Practice • Build Your Career",
+      subtitle: "Satkhira Government Polytechnic Institute",
+      tagline: "Civil Technology • Batch 22-23",
       desc: "Secure your contribution today to celebrate your journey and brighten future memories.",
       cta: "Start Contribution",
       shareBtn: "Share with Classmates",
@@ -54,11 +54,11 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
   const handleShare = async () => {
     const shareUrl = window.location.origin;
     const title = lang === 'bn' 
-      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট - বিদায় সংবর্ধনা ২০২৬"
-      : "Satkhira Government Polytechnic Institute - Senior Farewell 2026";
+      ? "বিদায় সংবর্ধনা ২০২৬ - সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট"
+      : "Farewell Celebration 2026 - Satkhira Government Polytechnic Institute";
     const text = lang === 'bn' 
-      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট-এর সিভিল টেকনোলজি বিদায় সংবর্ধনা ২০২৬ এর রেজিস্ট্রেশন ও কন্ট্রিবিউশন ফর্ম। আপনার তথ্য সাবমিট করতে নিচের লিংকে ভিজিট করুন।" 
-      : "Registration and contribution portal for Senior Farewell 2026 of Civil Technology at Satkhira Government Polytechnic Institute. Please register using this link.";
+      ? "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট-এর সিভিল টেকনোলজি বিদায় সংবর্ধনা ২০২৬ এর রেজিস্ট্রেশন ও কন্ট্রিবিউশন ফর্ম।" 
+      : "Registration and contribution portal for Farewell Celebration 2026 of Civil Technology at Satkhira Government Polytechnic Institute.";
 
     if (navigator.share) {
       try {
@@ -173,7 +173,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
               {content.subtitle}
             </p>
             <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto" />
-            <p className="text-base md:text-xl font-medium text-slate-300 uppercase tracking-[0.2em]">
+            <p className="text-base md:text-xl font-bold text-slate-200 uppercase tracking-[0.2em]">
               {content.tagline}
             </p>
           </motion.div>
@@ -212,15 +212,15 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl md:text-5xl font-display font-extrabold leading-tight text-white"
             >
-              Farewell Celebration <br />
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">Class of 2026</span>
+              {lang === 'bn' ? "বিদায় সংবর্ধনা" : "Farewell Celebration"} <br />
+              <span className="bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">{lang === 'bn' ? "২০২৬" : "2026"}</span>
             </motion.h2>
             
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-slate-400 text-lg leading-relaxed max-w-xl"
+              className="text-slate-300 text-lg leading-relaxed max-w-xl"
             >
               {content.desc}
             </motion.p>
@@ -300,7 +300,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
                 stat.color === 'amber' ? "text-amber-400" : "text-purple-400"
               )} />
             </div>
-            <p className="text-slate-400 text-sm font-semibold uppercase tracking-widest mb-2">{stat.label}</p>
+            <p className="text-slate-300 text-sm font-semibold uppercase tracking-widest mb-2">{stat.label}</p>
             <h3 className="text-2xl font-bold text-white tracking-tight">{stat.value}</h3>
           </motion.div>
         ))}
@@ -374,7 +374,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
                             Roll: {maskRoll(item.rollNumber)}
                           </span>
                         </div>
-                        <p className="text-slate-400 text-xs mt-1">
+                        <p className="text-slate-300 text-xs mt-1">
                           {item.department} ({item.shift === '1st' ? (lang === 'bn' ? '১ম শিফট' : '1st Shift') : (lang === 'bn' ? '২য় শিফট' : '2nd Shift')}) • {lang === 'bn' ? `${item.semester} পর্ব` : `${item.semester} Semester`}
                         </p>
                       </div>
@@ -382,7 +382,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
 
                     <div className="flex items-center justify-between sm:justify-end gap-6 shrink-0">
                       <div className="text-left">
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                           {lang === 'bn' ? 'দাখিলকৃত সময়' : 'Submitted at'}
                         </p>
                         <p className="text-slate-300 text-xs font-medium font-mono mt-0.5">{formattedDate()}</p>
@@ -428,7 +428,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
           <h2 className="text-white text-2xl md:text-5xl font-display font-black text-center tracking-tight">
             {lang === 'en' ? 'Interactive Digital Space' : 'ইন্টারেক্টিভ ডিজিটাল স্পেস'}
           </h2>
-          <p className="text-slate-400 text-xs md:text-sm max-w-lg mt-4 text-center leading-relaxed">
+          <p className="text-slate-300 text-xs md:text-sm max-w-lg mt-4 text-center leading-relaxed">
             {lang === 'en' 
               ? 'Experience the flow of modern tech. Drag, hover, and explore our high-speed particle system designed for digital innovation at Satkhira Government Polytechnic Institute.'
               : 'আধুনিক প্রযুক্তির প্রবাহ অনুভব করুন। সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউটের ডিজিটাল উদ্ভাবনের জন্য ডিজাইন করা আমাদের হাই-স্পিড পার্টিকেল সিস্টেমটি অন্বেষণ করুন।'}
@@ -461,7 +461,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
         <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
           <Info className="w-5 h-5" />
         </div>
-        <p className="text-sm md:text-base text-amber-200/80 font-medium">
+        <p className="text-sm md:text-base text-amber-200 font-bold">
           {content.notice}
         </p>
       </motion.div>
