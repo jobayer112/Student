@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { 
   ArrowRight, ShieldCheck, Users, Calendar, 
-  CreditCard, Sparkles, TrendingUp, Info, ChevronRight
+  CreditCard, Sparkles, TrendingUp, Info, ChevronRight, ExternalLink
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Vortex } from './ui/vortex';
@@ -191,7 +191,7 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
         </div>
 
         <div className="lg:w-1/2 w-full">
-          <div className="grid grid-cols-2 gap-4 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
             <div className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-white/5 bg-white/5 group hover:bg-white/10 transition-all">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 md:mb-6">
                 <CreditCard className="w-5 h-5 md:w-6 md:h-6" />
@@ -206,6 +206,24 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
               <p className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1 md:mb-2">Event</p>
               <p className="text-xl md:text-2xl font-bold text-white tracking-tight">Farewell</p>
             </div>
+            <a 
+              href="https://student-regstretion.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-indigo-500/10 bg-indigo-500/5 hover:bg-indigo-500/15 transition-all block relative group overflow-hidden text-left"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 md:mb-6">
+                <ExternalLink className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
+              </div>
+              <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1 md:mb-2">
+                {lang === 'bn' ? 'স্টুডেন্ট পোর্টাল' : 'Student Portal'}
+              </p>
+              <p className="text-sm font-bold text-white tracking-tight flex items-center gap-1 mt-1">
+                <span>{lang === 'bn' ? 'রেজিস্ট্রেশন লিংক' : 'Reg Link'}</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </p>
+            </a>
           </div>
         </div>
       </div>
