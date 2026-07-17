@@ -14,9 +14,10 @@ interface LandingPageProps {
 export default function LandingPage({ onStart, lang }: LandingPageProps) {
   const content = {
     bn: {
-      title: "সিনিয়র বিদায় সংবর্ধনা",
+      title: "সাতক্ষীরা পলিটেকনিক ইনস্টিটিউট",
       year: "২০২৬",
-      subtitle: "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট",
+      subtitle: "সিভিল টেকনোলজি ডিজিটাল প্ল্যাটফর্ম",
+      tagline: "শিখুন • অনুশীলন করুন • আপনার ক্যারিয়ার গড়ুন",
       desc: "আপনার যাত্রা উদযাপন করতে এবং ভবিষ্যৎ স্মৃতি উজ্জ্বল করতে আজই আপনার অবদান নিশ্চিত করুন।",
       cta: "অবদান শুরু করুন",
       stats: [
@@ -28,9 +29,10 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
       notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।"
     },
     en: {
-      title: "Senior Farewell Ceremony",
+      title: "Satkhira Polytechnic Institute",
       year: "2026",
-      subtitle: "Satkhira Govt. Polytechnic Institute",
+      subtitle: "Civil Technology Digital Platform",
+      tagline: "Learn • Practice • Build Your Career",
       desc: "Secure your contribution today to celebrate your journey and brighten future memories.",
       cta: "Start Contribution",
       stats: [
@@ -43,8 +45,11 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
     }
   }[lang];
 
+  const AI_LOGO = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10";
+  const SPI_IMAGE = "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-polytechnic-satkhira/2024/12/5f51302a85fd44809961b01184e02303.jpg";
+
   return (
-    <div className="space-y-20 relative">
+    <div className="space-y-16 relative">
       {/* Dynamic Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse" />
@@ -52,96 +57,155 @@ export default function LandingPage({ onStart, lang }: LandingPageProps) {
         <div className="absolute bottom-[-10%] left-[20%] w-[30%] h-[30%] bg-emerald-600/10 rounded-full blur-[120px]" />
       </div>
 
-      {/* Hero Section */}
-      <div className="flex flex-col lg:flex-row gap-16 items-center">
-        <div className="lg:w-1/2 space-y-8 text-center lg:text-left">
+      {/* Floating AI Assistant Button */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="fixed bottom-8 left-8 z-50 group"
+      >
+        <div className="relative">
+          <div className="absolute inset-0 bg-blue-500/40 rounded-full blur-xl group-hover:bg-blue-500/60 transition-all" />
+          <div className="relative w-14 h-14 rounded-full border-2 border-white/20 overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-600 to-blue-600 p-0.5">
+            <img 
+              src={AI_LOGO} 
+              alt="AI Assistant" 
+              className="w-full h-full object-cover rounded-full bg-slate-900" 
+              loading="lazy"
+            />
+          </div>
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-950 animate-pulse" />
+        </div>
+        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-slate-900/90 backdrop-blur-md border border-white/10 rounded-xl text-xs font-bold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest shadow-xl">
+          AI Assistant Online
+        </div>
+      </motion.button>
+
+      {/* Premium Hero Banner */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative w-full rounded-[2.5rem] overflow-hidden group shadow-2xl"
+      >
+        <div className="absolute inset-0 bg-slate-950/50 z-10" />
+        <img 
+          src={SPI_IMAGE} 
+          alt="Satkhira Polytechnic Institute" 
+          className="w-full h-[500px] md:h-[650px] object-cover transition-transform duration-10000 group-hover:scale-110"
+          loading="lazy"
+        />
+        
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-xs font-bold uppercase tracking-widest"
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] md:text-xs font-black uppercase tracking-[0.3em] mb-8"
           >
-            <Sparkles className="w-3.5 h-3.5 animate-spin-slow" />
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             Official Portal {lang === 'en' ? '2026' : '২০২৬'}
           </motion.div>
-          
+
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-4xl md:text-7xl lg:text-8xl font-display font-black text-white leading-none tracking-tight mb-4 drop-shadow-2xl"
+          >
+            {content.title}
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6"
+          >
+            <p className="text-xl md:text-3xl font-bold bg-gradient-to-r from-indigo-300 via-white to-purple-300 bg-clip-text text-transparent">
+              {content.subtitle}
+            </p>
+            <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto" />
+            <p className="text-base md:text-xl font-medium text-slate-300 uppercase tracking-[0.2em]">
+              {content.tagline}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-12"
+          >
+            <button 
+              onClick={onStart}
+              className="relative group px-12 py-5 bg-white text-slate-950 rounded-2xl font-black text-lg transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-white/10 flex items-center gap-3"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
+              {content.cta}
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Main Content Grid */}
+      <div className="flex flex-col lg:flex-row gap-16 items-start px-2">
+        <div className="lg:w-1/2 space-y-8">
           <div className="space-y-4">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-7xl font-display font-extrabold leading-[1.1] bg-gradient-to-br from-white via-white to-slate-400 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-display font-extrabold leading-tight text-white"
             >
-              {content.title} <br />
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">{content.year}</span>
+              Farewell Celebration <br />
+              <span className="bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">Class of 2026</span>
             </motion.h2>
             
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0"
+              className="text-slate-400 text-lg leading-relaxed max-w-xl"
             >
               {content.desc}
             </motion.p>
           </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start"
-          >
-            <button onClick={onStart} className="relative group px-10 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 overflow-hidden shadow-2xl shadow-indigo-500/30">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              {content.cta}
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </button>
-            
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-950 bg-slate-800 flex items-center justify-center overflow-hidden">
-                  <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="user" />
+          <div className="flex items-center gap-4 px-6 py-4 glass-card rounded-2xl border-white/5 bg-white/5">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className={cn(
+                  "w-8 h-8 rounded-full border-2 border-slate-950 flex items-center justify-center text-[10px] font-bold text-white shadow-lg",
+                  i === 1 ? "bg-indigo-500" : i === 2 ? "bg-purple-500" : "bg-emerald-500"
+                )}>
+                  {String.fromCharCode(64 + i)}
                 </div>
               ))}
-              <div className="w-10 h-10 rounded-full border-2 border-slate-950 bg-indigo-600 flex items-center justify-center text-[10px] font-bold text-white">
-                +200
-              </div>
             </div>
-          </motion.div>
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+              <span className="text-white">+200</span> Participants Joined
+            </div>
+          </div>
         </div>
 
         <div className="lg:w-1/2 w-full">
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            {/* Visual Decoration */}
-            <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-600/20 rounded-full blur-[100px] animate-pulse" />
-            
-            <div className="relative glass-card rounded-[2.5rem] overflow-hidden p-3 glow-indigo">
-              <div className="relative rounded-[2rem] overflow-hidden group">
-                <img 
-                  src="/college_building.png" 
-                  alt="Campus" 
-                  className="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-1000 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-                
-                <div className="absolute bottom-8 left-8 right-8 p-6 glass-card rounded-2xl">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1.5 shadow-xl">
-                      <img src="/spi_logo.png" alt="Logo" className="w-full h-full object-contain" />
-                    </div>
-                    <div>
-                      <h4 className="text-white font-bold text-lg">{content.subtitle}</h4>
-                      <p className="text-slate-400 text-xs font-semibold tracking-wider">SATKHIRA, BANGLADESH</p>
-                    </div>
-                  </div>
-                </div>
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-white/5 bg-white/5 group hover:bg-white/10 transition-all">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-4 md:mb-6">
+                <CreditCard className="w-5 h-5 md:w-6 md:h-6" />
               </div>
+              <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1 md:mb-2">Batch</p>
+              <p className="text-xl md:text-2xl font-bold text-white tracking-tight">2026</p>
             </div>
-          </motion.div>
+            <div className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-white/5 bg-white/5 group hover:bg-white/10 transition-all">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 md:mb-6">
+                <Users className="w-5 h-5 md:w-6 md:h-6" />
+              </div>
+              <p className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1 md:mb-2">Event</p>
+              <p className="text-xl md:text-2xl font-bold text-white tracking-tight">Farewell</p>
+            </div>
+          </div>
         </div>
       </div>
 

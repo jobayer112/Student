@@ -61,7 +61,33 @@ app.get('/api/admin/contributions', async (req, res) => {
       code: error.code,
       details: error.details
     });
-    res.status(500).json({ success: false, message: 'Failed to fetch data', error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch data', 
+      error: error.message,
+      code: error.code,
+      details: error.details
+    });
+  }
+});
+
+// Admin Create Record
+app.post('/api/admin/contributions', async (req, res) => {
+  const token = req.headers.authorization;
+  if (!token?.startsWith('fake-admin-token-')) {
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
+  }
+
+  const data = req.body;
+  try {
+    const docRef = await db.collection('contributions').add({
+      ...data,
+      createdAt: new Date().toISOString()
+    });
+    res.json({ success: true, id: docRef.id });
+  } catch (error: any) {
+    console.error('Error creating contribution:', error);
+    res.status(500).json({ success: false, message: 'Failed to create record', error: error.message });
   }
 });
 
@@ -76,10 +102,14 @@ app.put('/api/admin/contributions/:id', async (req, res) => {
   const updateData = req.body;
 
   try {
-    await db.collection('contributions').doc(id).update(updateData);
+    await db.collection('contributions').doc(id).update({
+      ...updateData,
+      updatedAt: new Date().toISOString()
+    });
     res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to update record' });
+  } catch (error: any) {
+    console.error('Error updating contribution:', error);
+    res.status(500).json({ success: false, message: 'Failed to update record', error: error.message });
   }
 });
 

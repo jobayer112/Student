@@ -8,10 +8,11 @@ interface LayoutProps {
   children: React.ReactNode;
   onLanguageChange?: (lang: Language) => void;
   onAdminClick?: () => void;
+  onLogoClick?: () => void;
   currentLang?: Language;
 }
 
-export default function Layout({ children, onLanguageChange, onAdminClick, currentLang = 'bn' }: LayoutProps) {
+export default function Layout({ children, onLanguageChange, onAdminClick, onLogoClick, currentLang = 'bn' }: LayoutProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -19,6 +20,8 @@ export default function Layout({ children, onLanguageChange, onAdminClick, curre
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const AI_LOGO = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10";
 
   return (
     <div className="min-h-screen bg-slate-950 selection:bg-indigo-500/30 font-sans overflow-x-hidden relative">
@@ -35,43 +38,40 @@ export default function Layout({ children, onLanguageChange, onAdminClick, curre
       </div>
 
       {/* Navigation */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'py-3 bg-slate-950/80 backdrop-blur-xl border-b border-white/5 shadow-2xl' : 'py-6'
+      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+        scrolled ? 'py-3 bg-slate-950/80 backdrop-blur-2xl border-b border-white/5 shadow-2xl' : 'py-6'
       }`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden p-1 border border-white/20"
+              whileTap={{ scale: 0.95 }}
+              onClick={onLogoClick}
+              className="relative group cursor-pointer"
             >
-              <img src="/spi_logo.png" alt="SPI Logo" className="w-full h-full object-contain" />
+              <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur group-hover:bg-blue-500/40 transition-all" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden p-0.5 border border-white/20 bg-gradient-to-br from-slate-900 to-indigo-900">
+                <img src={AI_LOGO} alt="AI Assistant" className="w-full h-full object-cover rounded-xl" />
+              </div>
             </motion.div>
             <div className="hidden sm:block">
-              <h1 className="text-base md:text-xl font-display font-bold tracking-tight text-white leading-none">SPI Portal</h1>
-              <p className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-slate-400 mt-1 font-semibold">Farewell 2026</p>
+              <h1 className="text-lg md:text-2xl font-display font-black tracking-tight text-white leading-none">AI PORTAL</h1>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-400 mt-1 font-black">Powered by Gemini</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 md:gap-6">
-            <button 
-              onClick={onAdminClick}
-              className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 hover:border-indigo-500/20 transition-all group"
-              title="Admin Panel"
-            >
-              <ShieldCheck className="w-5 h-5" />
-            </button>
-
+          <div className="flex items-center gap-4 md:gap-8">
             <button 
               onClick={() => onLanguageChange?.(currentLang === 'bn' ? 'en' : 'bn')}
-              className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 glass-card hover:bg-white/10 rounded-2xl transition-all group text-xs md:text-sm font-medium"
+              className="flex items-center gap-3 px-4 py-2 glass-card hover:bg-white/10 rounded-2xl transition-all group text-xs md:text-sm font-black text-white uppercase tracking-widest"
             >
               <Globe className="w-4 h-4 text-indigo-400 group-hover:rotate-12 transition-transform" />
               <span>{currentLang === 'bn' ? 'English' : 'বাংলা'}</span>
             </button>
 
-            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl text-indigo-300 text-sm font-semibold">
-              <ShieldCheck className="w-4 h-4" />
-              Secure Payment
+            <div className="hidden lg:flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-white/5 rounded-2xl text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              Verified Access
             </div>
           </div>
         </div>
@@ -87,7 +87,14 @@ export default function Layout({ children, onLanguageChange, onAdminClick, curre
         <div className="container mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs md:text-sm font-medium">
             <div className="text-center md:text-left">
-              <p className="text-slate-400 mb-1">© 2026 Senior Farewell Committee</p>
+              <p className="text-slate-400 mb-1">
+                <button 
+                  onClick={onAdminClick}
+                  className="hover:text-white transition-colors cursor-default"
+                >
+                  ©
+                </button> 2026 Senior Farewell Committee
+              </p>
               <p>Satkhira Government Polytechnic Institute</p>
             </div>
             

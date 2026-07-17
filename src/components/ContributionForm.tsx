@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Check, CreditCard, User, Hash, Phone, Mail, 
   Building, Clock, ArrowLeft, ArrowRight, Loader2, 
-  ShieldCheck, Smartphone, QrCode, AlertCircle, Sparkles, Calendar
+  ShieldCheck, Smartphone, QrCode, AlertCircle, Sparkles, Calendar, Copy
 } from 'lucide-react';
 import { Department, Semester, Shift, PaymentMethod, PaymentStatus } from '../types';
 import { cn } from '../lib/utils';
@@ -145,6 +145,14 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      <div className="flex items-center justify-center gap-4 mb-4">
+        <div className="w-10 h-10 rounded-xl border border-white/20 p-0.5 bg-gradient-to-br from-slate-900 to-indigo-900 shadow-xl">
+           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" alt="AI" className="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div className="h-4 w-px bg-white/10" />
+        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">AI Verified System</span>
+      </div>
+
       {/* Progress Indicator */}
       <div className="relative flex justify-between items-center px-4">
         <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/5 -translate-y-1/2 z-0" />
@@ -285,9 +293,24 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
                       <QrCode className="w-6 h-6" />
                       <span className="font-bold text-sm tracking-widest uppercase">Scan to Pay</span>
                     </div>
-                    <div className="flex justify-center">
-                      <div className="w-32 h-32 bg-white rounded-2xl p-2">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=01894548232" alt="QR" className="w-full h-full" />
+                    <div className="flex justify-center group/qr relative">
+                      <div className="w-full aspect-square bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-xl">
+                        <Smartphone className="w-10 h-10 text-white mb-3" />
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="text-white font-black text-lg leading-tight">01894-548232</p>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText('01894548232');
+                              toast.success('নম্বরটি কপি করা হয়েছে!');
+                            }}
+                            className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-all active:scale-90"
+                            title="Copy Number"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Personal Account</p>
                       </div>
                     </div>
                     <p className="text-[10px] text-center text-slate-500 font-bold">01894-548232 (Personal)</p>

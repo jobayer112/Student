@@ -34,6 +34,9 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDept, setFilterDept] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<Contribution | null>(null);
+  const [modalData, setModalData] = useState<Partial<Contribution>>({});
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,13 +71,13 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
       const res = await fetch('/api/admin/contributions', {
         headers: { 'Authorization': authToken },
       });
-      const contributions = await res.json();
-      if (Array.isArray(contributions)) {
-        setData(contributions);
+      const result = await res.json();
+      if (Array.isArray(result)) {
+        setData(result);
       } else {
-        console.error('Invalid data format received:', contributions);
+        console.error('Error fetching data:', result);
         setData([]);
-        toast.error('ডাটা লোড করতে ব্যর্থ হয়েছে।');
+        toast.error(`ডাটা লোড করতে ব্যর্থ হয়েছে: ${result.error || 'Unknown error'}`);
       }
     } catch (err) {
       toast.error('ডাটা লোড করতে ব্যর্থ হয়েছে।');
@@ -114,6 +117,64 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
     } catch (err) {
       toast.error('আপডেট করা সম্ভব হয়নি।');
     }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const url = editingItem 
+        ? `/api/admin/contributions/${editingItem.id}` 
+        : '/api/admin/contributions';
+      
+      const method = editingItem ? 'PUT' : 'POST';
+      
+      const res = await fetch(url, {
+        method,
+        headers: { 
+          'Authorization': token!,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(modalData),
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        toast.success(editingItem ? 'তথ্য আপডেট করা হয়েছে' : 'নতুন তথ্য যুক্ত করা হয়েছে');
+        fetchData(token!);
+        setIsModalOpen(false);
+        setEditingItem(null);
+        setModalData({});
+      } else {
+        toast.error(result.message || 'সেভ করা সম্ভব হয়নি।');
+      }
+    } catch (err) {
+      toast.error('সার্ভার ত্রুটি।');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openEditModal = (item: Contribution) => {
+    setEditingItem(item);
+    setModalData(item);
+    setIsModalOpen(true);
+  };
+
+  const openAddModal = () => {
+    setEditingItem(null);
+    setModalData({
+      fullName: '',
+      rollNumber: '',
+      department: 'Computer',
+      semester: '8th',
+      shift: '1st',
+      mobileNumber: '',
+      paymentMethod: 'Cash',
+      paymentStatus: 'Pending',
+      academicSession: '2022-23'
+    });
+    setIsModalOpen(true);
   };
 
   const exportToExcel = () => {
@@ -186,12 +247,15 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
           className="glass-card p-10 rounded-[2.5rem] w-full max-w-md glow-indigo text-center space-y-8"
         >
           <div className="space-y-4">
-            <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto border border-indigo-500/20">
-              <Lock className="w-10 h-10 text-indigo-500" />
+            <div className="relative inline-block">
+              <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl" />
+              <div className="w-20 h-20 bg-gradient-to-br from-slate-900 to-indigo-900 rounded-3xl flex items-center justify-center mx-auto border border-white/20 p-0.5 relative z-10">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" alt="AI" className="w-full h-full object-cover rounded-2xl" />
+              </div>
             </div>
             <div>
-              <h2 className="text-3xl font-display font-bold text-white tracking-tight">Admin Console</h2>
-              <p className="text-slate-400 mt-2">Enter restricted access code to manage portal.</p>
+              <h2 className="text-3xl font-display font-bold text-white tracking-tight uppercase">Admin Access</h2>
+              <p className="text-slate-400 mt-2 text-sm">Secure Portal Managed by AI Assistant</p>
             </div>
           </div>
 
@@ -231,6 +295,9 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
         </div>
         
         <div className="flex flex-wrap gap-3">
+          <button onClick={openAddModal} className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-2xl transition-all font-bold text-xs uppercase tracking-widest text-white shadow-lg shadow-indigo-600/20">
+            <Users className="w-4 h-4" /> Add Entry
+          </button>
           <button onClick={generateReport} className="flex items-center gap-2 px-6 py-3 glass-card rounded-2xl hover:bg-white/10 transition-all font-bold text-xs uppercase tracking-widest text-slate-300">
             <FileText className="w-4 h-4" /> PDF Report
           </button>
@@ -397,12 +464,22 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
                     </button>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <button 
-                      onClick={() => handleDelete(item.id!)}
-                      className="p-3 glass-card rounded-xl hover:bg-red-500/20 hover:text-red-500 transition-all text-slate-600 opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={() => openEditModal(item)}
+                        className="p-3 glass-card rounded-xl hover:bg-indigo-500/20 hover:text-indigo-400 transition-all text-slate-600"
+                        title="Edit Entry"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(item.id!)}
+                        className="p-3 glass-card rounded-xl hover:bg-red-500/20 hover:text-red-500 transition-all text-slate-600"
+                        title="Delete Entry"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -423,6 +500,161 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
            End Management Session
          </button>
       </div>
+
+      {/* Edit/Add Modal */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-2xl bg-slate-900 border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <h2 className="text-2xl font-display font-bold text-white">
+                  {editingItem ? 'Edit Entry' : 'Add New Entry'}
+                </h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/10 rounded-xl transition-colors">
+                  <X className="w-6 h-6 text-slate-400" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSave} className="p-8 overflow-y-auto space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Full Name</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="glass-input w-full"
+                      value={modalData.fullName || ''}
+                      onChange={e => setModalData({...modalData, fullName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Roll Number</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="glass-input w-full"
+                      value={modalData.rollNumber || ''}
+                      onChange={e => setModalData({...modalData, rollNumber: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Department</label>
+                    <select 
+                      className="glass-input w-full"
+                      value={modalData.department || 'Computer'}
+                      onChange={e => setModalData({...modalData, department: e.target.value as any})}
+                    >
+                      <option value="Computer">Computer</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Electrical">Electrical</option>
+                      <option value="Civil">Civil</option>
+                      <option value="Mechanical">Mechanical</option>
+                      <option value="Refrigeration & Air Conditioning">RAC</option>
+                      <option value="Environmental">Environmental</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Semester</label>
+                    <select 
+                      className="glass-input w-full"
+                      value={modalData.semester || '8th'}
+                      onChange={e => setModalData({...modalData, semester: e.target.value as any})}
+                    >
+                      {['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'].map(s => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Shift</label>
+                    <select 
+                      className="glass-input w-full"
+                      value={modalData.shift || '1st'}
+                      onChange={e => setModalData({...modalData, shift: e.target.value as any})}
+                    >
+                      <option value="1st">1st Shift</option>
+                      <option value="2nd">2nd Shift</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Mobile Number</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="glass-input w-full"
+                      value={modalData.mobileNumber || ''}
+                      onChange={e => setModalData({...modalData, mobileNumber: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Payment Method</label>
+                    <select 
+                      className="glass-input w-full"
+                      value={modalData.paymentMethod || 'Cash'}
+                      onChange={e => setModalData({...modalData, paymentMethod: e.target.value as any})}
+                    >
+                      <option value="Cash">Cash</option>
+                      <option value="bKash">bKash</option>
+                      <option value="Nagad">Nagad</option>
+                      <option value="Rocket">Rocket</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Status</label>
+                    <select 
+                      className="glass-input w-full"
+                      value={modalData.paymentStatus || 'Pending'}
+                      onChange={e => setModalData({...modalData, paymentStatus: e.target.value as any})}
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Verified">Verified</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Transaction ID / Reference</label>
+                    <input 
+                      type="text" 
+                      className="glass-input w-full font-mono uppercase"
+                      value={modalData.transactionId || ''}
+                      onChange={e => setModalData({...modalData, transactionId: e.target.value})}
+                      placeholder="e.g. AXB123CD45"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/5 flex gap-4">
+                  <button 
+                    type="button" 
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 py-4 glass-card rounded-2xl font-bold text-slate-400 hover:text-white transition-all"
+                  >
+                    Discard Changes
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="flex-[2] py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black text-lg shadow-xl shadow-indigo-600/20 disabled:opacity-50 transition-all"
+                  >
+                    {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : editingItem ? 'Update Record' : 'Create Record'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

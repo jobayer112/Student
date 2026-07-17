@@ -79,7 +79,12 @@ export default function App() {
   };
 
   return (
-    <Layout onLanguageChange={setLang} onAdminClick={() => setState('admin')} currentLang={lang}>
+    <Layout 
+      onLanguageChange={setLang} 
+      onAdminClick={() => setState('admin')} 
+      onLogoClick={() => setState('landing')}
+      currentLang={lang}
+    >
       <AnimatePresence mode="wait">
         {state === 'landing' && (
           <motion.div
