@@ -1,0 +1,16 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+      match /contributions/{contributionId} {
+        // Allow creation if the data is valid (validation in app logic for now)
+        allow create: if true;
+        
+        // Allow public read for uniqueness checks and basic verification
+        allow read: if true;
+        
+        // Update and delete are restricted
+        allow update, delete: if false; 
+      }
+  }
+}

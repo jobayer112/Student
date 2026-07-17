@@ -1,0 +1,8 @@
+{
+  "name": "Senior Farewell Contribution Portal",
+  "description": "A premium contribution collection portal for Satkhira Government Polytechnic Institute's 2026 Senior Farewell program.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

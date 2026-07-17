@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "contribution": {
+      "title": "Contribution",
+      "description": "A student farewell contribution record.",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 100,
+          "description": "Full name of the student"
+        },
+        "rollNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "minLength": 5,
+          "maxLength": 15,
+          "description": "Student roll number (unique)"
+        },
+        "registrationNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "minLength": 5,
+          "maxLength": 20,
+          "description": "Student registration number (unique)"
+        },
+        "department": {
+          "type": "string",
+          "enum": ["Computer", "Electronics", "Electrical", "Civil", "Mechanical", "Refrigeration & Air Conditioning", "Environmental"],
+          "description": "Student department"
+        },
+        "semester": {
+          "type": "string",
+          "enum": ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"],
+          "description": "Student semester"
+        },
+        "shift": {
+          "type": "string",
+          "enum": ["1st", "2nd"],
+          "description": "Student shift"
+        },
+        "mobileNumber": {
+          "type": "string",
+          "pattern": "^01[3-9][0-9]{8}$",
+          "description": "Contact mobile number"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Optional email address"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["Cash", "bKash", "Nagad", "Rocket"],
+          "description": "Selected payment method"
+        },
+        "paymentStatus": {
+          "type": "string",
+          "enum": ["Paid", "Pending"],
+          "description": "Status of the payment"
+        },
+        "transactionId": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Transaction ID for online payments"
+        },
+        "submissionId": {
+          "type": "string",
+          "description": "Unique submission identifier"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of submission"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "ip": { "type": "string" },
+            "device": { "type": "string" },
+            "browser": { "type": "string" }
+          }
+        }
+      },
+      "required": [
+        "fullName",
+        "rollNumber",
+        "registrationNumber",
+        "department",
+        "semester",
+        "shift",
+        "mobileNumber",
+        "paymentMethod",
+        "paymentStatus",
+        "submissionId",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/contributions/{contributionId}": {
+      "schema": "contribution",
+      "description": "Collection of all student contributions"
+    }
+  }
+}
