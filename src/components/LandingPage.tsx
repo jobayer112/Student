@@ -261,7 +261,7 @@ export default function LandingPage({ onStart, lang, contributions }: LandingPag
                 <CreditCard className="w-5 h-5 md:w-6 md:h-6" />
               </div>
               <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1 md:mb-2">Batch</p>
-              <p className="text-xl md:text-2xl font-bold text-white tracking-tight">2026</p>
+              <p className="text-xl md:text-2xl font-bold text-white tracking-tight">22-23</p>
             </div>
             <div className="p-5 md:p-8 glass-card rounded-[1.5rem] md:rounded-[2rem] border-white/5 bg-white/5 group hover:bg-white/10 transition-all">
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 md:mb-6">

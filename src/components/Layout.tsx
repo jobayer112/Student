@@ -90,7 +90,7 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
                   className="hover:text-white transition-colors cursor-default"
                 >
                   ©
-                </button> 2026 Senior Farewell Committee
+                </button> Senior Farewell Committee
               </p>
               <p>Satkhira Government Polytechnic Institute</p>
             </div>
