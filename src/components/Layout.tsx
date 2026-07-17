@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Toaster } from 'react-hot-toast';
-import { Globe, ShieldCheck, ChevronRight, Menu, X } from 'lucide-react';
+import { Globe, ShieldCheck, ChevronRight, Menu, X, Building2 } from 'lucide-react';
 import { Language } from '../types';
 
 interface LayoutProps {
@@ -20,8 +20,6 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const AI_LOGO = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10";
 
   return (
     <div className="min-h-screen bg-slate-950 selection:bg-indigo-500/30 font-sans overflow-x-hidden relative">
@@ -50,13 +48,12 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
               className="relative group cursor-pointer"
             >
               <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur group-hover:bg-blue-500/40 transition-all" />
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden p-0.5 border border-white/20 bg-gradient-to-br from-slate-900 to-indigo-900">
-                <img src={AI_LOGO} alt="AI Assistant" className="w-full h-full object-cover rounded-xl" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden border border-white/20 bg-gradient-to-br from-slate-900 to-indigo-900">
+                <Building2 className="w-6 h-6 md:w-7 md:h-7 text-indigo-400 group-hover:text-white transition-colors" />
               </div>
             </motion.div>
             <div className="hidden sm:block">
-              <h1 className="text-lg md:text-2xl font-display font-black tracking-tight text-white leading-none">AI PORTAL</h1>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-400 mt-1 font-black">Powered by Gemini</p>
+              <h1 className="text-lg md:text-2xl font-display font-black tracking-tight text-white leading-none">CIVIL PORTAL</h1>
             </div>
           </div>
 
