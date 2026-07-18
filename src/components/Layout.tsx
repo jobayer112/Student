@@ -87,7 +87,7 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
         </div>
       </header>
 
-      <main className="relative z-10 pt-28 pb-12 px-4 min-h-screen">
+      <main className="relative z-10 pt-20 md:pt-28 pb-12 px-4 min-h-screen">
         <div className="container mx-auto">
           {children}
         </div>
