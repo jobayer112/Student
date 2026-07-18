@@ -25,7 +25,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       subtitle: "সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউট",
       tagline: "সিভিল টেকনোলজি • ব্যাচ ২২-২৩",
       desc: "আপনার যাত্রা উদযাপন করতে এবং ভবিষ্যৎ স্মৃতি উজ্জ্বল করতে আজই আপনার অবদান নিশ্চিত করুন।",
-      cta: "অবদান শুরু করুন",
+      cta: "সাধারণ শিক্ষার্থীদের জন্য",
       shareBtn: "সহপাঠীদের সাথে শেয়ার করুন",
       stats: [
         { label: "অবদানের পরিমাণ", value: "১৫০ টাকা", icon: CreditCard, color: "indigo" },
@@ -37,7 +37,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       farewellTitle: "🎓 বিদায়ী শিক্ষার্থীদের তথ্য",
       farewellSubtitle: "Outgoing Students Registration",
       farewellInfo: "শুধুমাত্র বিদায়ী শিক্ষার্থীদের জন্য। আপনাদের প্রত্যেকের জন্য ক্রেস্টের ব্যবস্থা হয়েছে তাই সঠিক তথ্য প্রদান করুন।",
-      farewellCta: "রেজিস্ট্রেশন করুন"
+      farewellCta: "বিদায়ী শিক্ষার্থীদের জন্য"
     },
     en: {
       title: "Farewell Celebration 2026",
@@ -45,7 +45,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       subtitle: "Satkhira Government Polytechnic Institute",
       tagline: "Civil Technology • Batch 22-23",
       desc: "Secure your contribution today to celebrate your journey and brighten future memories.",
-      cta: "Start Contribution",
+      cta: "For General Students",
       shareBtn: "Share with Classmates",
       stats: [
         { label: "Contribution", value: "150 BDT", icon: CreditCard, color: "indigo" },
@@ -57,7 +57,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       farewellTitle: "🎓 Farewell Registration",
       farewellSubtitle: "Outgoing Students Registration",
       farewellInfo: "Only for Graduating students. A special Crest will be provided to each student, so please provide accurate information.",
-      farewellCta: "Register Now"
+      farewellCta: "For Outgoing Students"
     }
   }[lang];
 
@@ -196,18 +196,40 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
           >
             <button 
               onClick={onStart}
-              className="relative group px-10 py-4.5 bg-white text-slate-950 rounded-2xl font-black text-base transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-white/10 flex items-center gap-2.5 cursor-pointer"
+              className="w-full sm:w-auto relative group px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-indigo-600/20 flex flex-col items-center justify-center gap-1 cursor-pointer border-t border-white/20"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity" />
-              {content.cta}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+              <div className="flex items-center gap-2.5">
+                <CreditCard className="w-5 h-5 text-indigo-200" />
+                <span className="text-base uppercase tracking-tight">{content.cta}</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <span className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest group-hover:text-indigo-100 transition-colors">
+                {lang === 'bn' ? 'পেমেন্ট ও কন্ট্রিবিউশন' : 'Payment & Contribution'}
+              </span>
             </button>
+
+            <button 
+              onClick={onFarewell}
+              className="w-full sm:w-auto relative group px-8 py-4 bg-amber-600 text-white rounded-2xl font-black transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-amber-600/20 flex flex-col items-center justify-center gap-1 cursor-pointer border-t border-white/20"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="w-5 h-5 text-amber-200" />
+                <span className="text-base uppercase tracking-tight">{content.farewellCta}</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+              <span className="text-[10px] font-bold text-amber-200/70 uppercase tracking-widest group-hover:text-amber-100 transition-colors">
+                {lang === 'bn' ? 'ক্রেস্ট ও তথ্য প্রদান' : 'Crest & Info Submission'}
+              </span>
+            </button>
+
             <button 
               onClick={handleShare}
-              className="relative group px-10 py-4.5 bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-white/25 text-white rounded-2xl font-black text-base transition-all hover:scale-105 active:scale-95 hover:bg-slate-900/60 flex items-center gap-2.5 cursor-pointer"
+              className="hidden sm:flex p-5 bg-white/5 backdrop-blur-md border border-white/10 hover:border-white/25 text-white rounded-2xl transition-all hover:scale-110 active:scale-90 items-center justify-center group"
+              title={content.shareBtn}
             >
-              <Share2 className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
-              {content.shareBtn}
+              <Share2 className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
             </button>
           </motion.div>
         </div>
