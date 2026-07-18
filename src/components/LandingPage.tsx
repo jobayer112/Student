@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { 
   ArrowRight, ShieldCheck, Users, Calendar, 
-  CreditCard, Sparkles, TrendingUp, Info, ChevronRight, Share2
+  CreditCard, Sparkles, TrendingUp, Info, ChevronRight, Share2,
+  AlertTriangle
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Vortex } from './ui/vortex';
@@ -322,22 +323,30 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="lg:col-span-4 p-8 md:p-10 glass-card rounded-[2rem] md:rounded-[2.5rem] border-indigo-500/30 bg-indigo-500/5 glow-indigo border flex flex-col justify-between"
+          className="lg:col-span-4 p-8 md:p-10 glass-card rounded-[2rem] md:rounded-[2.5rem] border-amber-500/50 bg-amber-500/5 glow-amber border-2 flex flex-col justify-between relative overflow-hidden"
         >
+          <div className="absolute top-0 right-0 p-4">
+            <div className="bg-amber-500/20 text-amber-500 text-[10px] font-black uppercase px-3 py-1 rounded-full border border-amber-500/30 animate-pulse">
+              {lang === 'bn' ? 'শুধুমাত্র বিদায়ী শিক্ষার্থীদের জন্য' : 'For Outgoing Students Only'}
+            </div>
+          </div>
+
           <div>
-            <div className="w-16 h-16 rounded-3xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 mb-8">
-              <Sparkles className="w-8 h-8 animate-pulse" />
+            <div className="w-16 h-16 rounded-3xl bg-amber-500/20 flex items-center justify-center text-amber-500 mb-8 shadow-lg shadow-amber-500/10">
+              <AlertTriangle className="w-8 h-8 animate-pulse" />
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">{(content as any).farewellTitle}</h3>
-            <p className="text-indigo-400 text-xs font-black uppercase tracking-widest mb-4">{(content as any).farewellSubtitle}</p>
-            <p className="text-slate-300 text-sm leading-relaxed font-medium mb-8">
-              {(content as any).farewellInfo}
-            </p>
+            <p className="text-amber-400 text-xs font-black uppercase tracking-widest mb-4">{(content as any).farewellSubtitle}</p>
+            <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl mb-8">
+              <p className="text-amber-200 text-sm leading-relaxed font-bold">
+                {(content as any).farewellInfo}
+              </p>
+            </div>
           </div>
           
           <button 
             onClick={onFarewell}
-            className="w-full btn-primary py-5 group flex items-center justify-center gap-3 text-lg"
+            className="w-full bg-amber-600 hover:bg-amber-500 text-white py-5 rounded-2xl group flex items-center justify-center gap-3 text-lg font-bold shadow-xl shadow-amber-600/20 active:scale-95 transition-all"
           >
             {(content as any).farewellCta}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
