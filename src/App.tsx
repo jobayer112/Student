@@ -28,6 +28,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [lang, setLang] = useState<Language>('bn');
+  const [viewMode, setViewMode] = useState<'mobile' | 'desktop'>('mobile');
   const [lastSubmission, setLastSubmission] = useState<Contribution | FarewellStudent | null>(null);
   const [contributions, setContributions] = useState<Contribution[]>([]);
 
@@ -108,6 +109,7 @@ export default function App() {
 
   return (
     <AnimatePresence mode="wait">
+      <Toaster position="top-right" />
       {initialLoading ? (
         <motion.div
           key="loader"
@@ -130,6 +132,8 @@ export default function App() {
             onAdminClick={() => setState('admin')} 
             onLogoClick={() => setState('landing')}
             currentLang={lang}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
           >
             <AnimatePresence mode="wait">
               {state === 'landing' && (
@@ -229,6 +233,7 @@ export default function App() {
                     <CardSearch 
                       onBack={() => setState('landing')} 
                       lang={lang} 
+                      viewMode={viewMode}
                     />
                   </motion.div>
                 )}

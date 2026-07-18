@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toPng } from 'html-to-image';
 import QRCode from 'react-qr-code';
+import { Toaster, toast } from 'react-hot-toast';
 import { 
   Download, User, Hash, Calendar, Phone, ShieldCheck, 
   Camera, Clock, MapPin, Sparkles, Award, BookOpen, 
@@ -13,15 +14,20 @@ import { Contribution, FarewellStudent } from '../types';
 interface StudentCardProps {
   student: Contribution | FarewellStudent;
   type: 'general' | 'farewell';
+  viewMode: 'mobile' | 'desktop';
 }
 
-const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
+const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [isDownloading, setIsDownloading] = useState(false);
   
   const frontCardRef = useRef<HTMLDivElement>(null);
   const backCardRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,14 +51,18 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
       const dataUrl = await toPng(ref, { 
         cacheBust: true, 
         pixelRatio: 3, // High-DPI print-ready quality
-        backgroundColor: '#0c0d12'
+        backgroundColor: '#0c0d12',
+        skipFonts: true,
+        fontEmbedCSS: ''
       });
       const link = document.createElement('a');
       link.download = `SPI-Farewell2026-${side.toUpperCase()}-${student.rollNumber}.png`;
       link.href = dataUrl;
       link.click();
+      toast.success('Card downloaded successfully!');
     } catch (err) {
       console.error('Failed to download card:', err);
+      toast.error('Failed to download card. Please try again.');
     } finally {
       setIsDownloading(false);
     }
@@ -93,6 +103,23 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
         </button>
       </div>
 
+      {/* View Mode Warning and Print Button */}
+      {viewMode === 'mobile' && (
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mt-4 text-center mx-4">
+          <p className="text-amber-400 text-xs font-bold">
+            💡 Switch to Desktop Mode in the top header for better download functionality.
+          </p>
+        </div>
+      )}
+      
+      <button
+        onClick={handlePrint}
+        className="w-full mt-6 py-4 bg-white text-black font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-200 transition-colors"
+      >
+        <Download className="w-5 h-5" />
+        Print / Download Card
+      </button>
+
       {/* Main Interactive Stage */}
       <div className="w-full flex justify-center items-center overflow-hidden py-2">
         <AnimatePresence mode="wait">
@@ -107,6 +134,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
             >
               {/* Card Container For Print (Fixed size in export, responsive scale in UI) */}
               <div 
+                id="printable-card"
                 ref={frontCardRef}
                 className="w-full h-full bg-gradient-to-br from-[#0a0a0f] via-[#12131a] to-[#050508] relative select-none p-5 sm:p-8 flex flex-col justify-between overflow-hidden"
               >
@@ -139,7 +167,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 sm:w-14 sm:h-14 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30 shadow-lg shrink-0">
                       <img 
-                        src="/spi_logo.png" 
+                        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
                         alt="SPI Logo" 
                         className="w-full h-full object-contain"
                       />
@@ -339,7 +367,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                 <div className="flex items-center gap-3 z-10">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
                     <img 
-                      src="/spi_logo.png" 
+                      src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
                       alt="SPI Logo" 
                       className="w-full h-full object-contain"
                     />

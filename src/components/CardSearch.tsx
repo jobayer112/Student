@@ -9,9 +9,10 @@ import StudentCard from './StudentCard';
 interface CardSearchProps {
   onBack: () => void;
   lang: Language;
+  viewMode: 'mobile' | 'desktop';
 }
 
-const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang }) => {
+const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang, viewMode }) => {
   const [rollNumber, setRollNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ student: Contribution | FarewellStudent; type: 'general' | 'farewell' } | null>(null);
@@ -148,7 +149,7 @@ const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang }) => {
           animate={{ opacity: 1, scale: 1 }}
           className="w-full"
         >
-          <StudentCard student={result.student} type={result.type} />
+          <StudentCard student={result.student} type={result.type} viewMode={viewMode} />
           
           <div className="mt-10 text-center">
             <button 

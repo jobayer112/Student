@@ -10,9 +10,11 @@ interface LayoutProps {
   onAdminClick?: () => void;
   onLogoClick?: () => void;
   currentLang?: Language;
+  viewMode: 'mobile' | 'desktop';
+  onViewModeChange: (mode: 'mobile' | 'desktop') => void;
 }
 
-export default function Layout({ children, onLanguageChange, onAdminClick, onLogoClick, currentLang = 'bn' }: LayoutProps) {
+export default function Layout({ children, onLanguageChange, onAdminClick, onLogoClick, currentLang = 'bn', viewMode, onViewModeChange }: LayoutProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -62,6 +64,13 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
           </div>
 
           <div className="flex items-center gap-4 md:gap-8">
+            <button 
+              onClick={() => onViewModeChange(viewMode === 'mobile' ? 'desktop' : 'mobile')}
+              className="flex items-center gap-2 px-3 py-2 glass-card hover:bg-white/10 rounded-2xl transition-all text-xs font-black text-white uppercase tracking-widest"
+            >
+              <span className={`w-2 h-2 rounded-full ${viewMode === 'desktop' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+              {viewMode}
+            </button>
             <button 
               onClick={() => onLanguageChange?.(currentLang === 'bn' ? 'en' : 'bn')}
               className="flex items-center gap-3 px-4 py-2 glass-card hover:bg-white/10 rounded-2xl transition-all group text-xs md:text-sm font-black text-white uppercase tracking-widest"

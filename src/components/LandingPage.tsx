@@ -33,7 +33,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
         { label: "শেষ তারিখ", value: "২৫ জুলাই, ২০২৬", icon: Calendar, color: "amber" },
         { label: "পেমেন্ট স্ট্যাটাস", value: "সুরক্ষিত", icon: ShieldCheck, color: "purple" }
       ],
-      notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।",
+      notice: "ডাউনলোড সংক্রান্ত সতর্কতা: কার্ডটি ডাউনলোড করতে হলে অবশ্যই ডেক্সটপ মুডে থাকতে হবে। অন্যথায় ডাউনলোড হবে না। লিংকটি কপি করুন, এরপর যেকোনো ব্রাউজারে ওপেন করে ডেক্সটপ মুডে নিয়ে আসুন।",
       farewellTitle: "🎓 বিদায়ী শিক্ষার্থীদের তথ্য",
       farewellSubtitle: "Outgoing Students Registration",
       farewellInfo: "শুধুমাত্র বিদায়ী শিক্ষার্থীদের জন্য। আপনাদের প্রত্যেকের জন্য ক্রেস্টের ব্যবস্থা হয়েছে তাই সঠিক তথ্য প্রদান করুন।",
@@ -55,7 +55,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
         { label: "Deadline", value: "25 July, 2026", icon: Calendar, color: "amber" },
         { label: "Security", value: "Verified", icon: ShieldCheck, color: "purple" }
       ],
-      notice: "Warning: Incorrect information will lead to rejection of your submission.",
+      notice: "Download Notice: To download the card, you must be in Desktop mode. Otherwise, it will not download. Copy the link, then open it in any browser and switch to Desktop mode.",
       farewellTitle: "🎓 Farewell Registration",
       farewellSubtitle: "Outgoing Students Registration",
       farewellInfo: "Only for Graduating students. A special Crest will be provided to each student, so please provide accurate information.",
