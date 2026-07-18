@@ -64,7 +64,7 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
       },
       welcome: {
         title: "নির্দেশনা",
-        message: "অনুগ্রহ করে সব তথ্য সঠিকভাবে প্রদান করুন। ভুল তথ্য প্রদান করলে আপনার তথ্য যাচাই করা সম্ভব হবে না এবং রেজিস্ট্রেশন বাতিল হতে পারে।",
+        message: "অনুগ্রহ করে সব তথ্য সঠিকভাবে প্রদান করুন। বিদায়ী শিক্ষার্থীদের প্রত্যেকের জন্য 'ক্রেস্ট' এর ব্যবস্থা করা হয়েছে, তাই আপনার নাম এবং অন্যান্য তথ্য সঠিক হওয়া বাধ্যতামূলক। ভুল তথ্য প্রদান করলে রেজিস্ট্রেশন বাতিল হতে পারে।",
         btn: "আমি বুঝতে পেরেছি"
       }
     },
@@ -96,7 +96,7 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
       },
       welcome: {
         title: "Important Notice",
-        message: "Please ensure all information provided is accurate. Incorrect data may result in registration cancellation or verification failure.",
+        message: "Please ensure all information provided is accurate. A 'Crest' is being prepared for every outgoing student, so your name and details must be correct. Incorrect data may result in registration failure.",
         btn: "I Understand"
       }
     }

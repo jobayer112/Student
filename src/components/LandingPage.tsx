@@ -36,7 +36,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       notice: "সতর্কতা: ভুল তথ্য প্রদান করলে আপনার আবেদন গ্রহণযোগ্য হবে না।",
       farewellTitle: "🎓 বিদায়ী শিক্ষার্থীদের তথ্য",
       farewellSubtitle: "Outgoing Students Registration",
-      farewellInfo: "শুধুমাত্র বিদায়ী শিক্ষার্থীদের জন্য। আপনারা কোনো চাঁদা প্রদান করবেন না।",
+      farewellInfo: "শুধুমাত্র বিদায়ী শিক্ষার্থীদের জন্য। আপনাদের প্রত্যেকের জন্য ক্রেস্টের ব্যবস্থা হয়েছে তাই সঠিক তথ্য প্রদান করুন।",
       farewellCta: "রেজিস্ট্রেশন করুন"
     },
     en: {
@@ -56,7 +56,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       notice: "Warning: Incorrect information will lead to rejection of your submission.",
       farewellTitle: "🎓 Farewell Registration",
       farewellSubtitle: "Outgoing Students Registration",
-      farewellInfo: "Only for Graduating students. No contribution required.",
+      farewellInfo: "Only for Graduating students. A special Crest will be provided to each student, so please provide accurate information.",
       farewellCta: "Register Now"
     }
   }[lang];
