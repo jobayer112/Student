@@ -19,7 +19,7 @@ const CardSearch = lazy(() => import('./components/CardSearch'));
 import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
 import { Contribution, FarewellStudent, Language } from './types';
-import toast from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 
 type AppState = 'landing' | 'form' | 'success' | 'admin' | 'farewell-form' | 'search-card';
 

@@ -95,7 +95,7 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
     doc.text(`Date: ${format(new Date(submission.createdAt), 'PPpp')}`, 20, 76);
     
     // Table Data
-    const tableData = [
+    const tableData: any[][] = [
       ['Student Name', submission.fullName],
       ['Roll Number', submission.rollNumber],
       ['Registration No', submission.registrationNumber || 'N/A'],
@@ -103,11 +103,19 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
       ['Semester & Shift', `${submission.semester} - ${submission.shift} Shift`],
       ['Academic Session', submission.academicSession],
       ['Mobile Number', submission.mobileNumber],
-      ['Payment Method', submission.paymentMethod],
-      ['Transaction ID', submission.transactionId || 'N/A'],
-      ['Amount Paid', '150 BDT'],
-      ['Status', 'Verified (Pending Committee Review)']
     ];
+
+    if ('paymentMethod' in submission) {
+      tableData.push(['Payment Method', submission.paymentMethod]);
+      tableData.push(['Transaction ID', submission.transactionId || 'N/A']);
+      tableData.push(['Amount Paid', '150 BDT']);
+      tableData.push(['Status', 'Verified (Pending Committee Review)']);
+    } else {
+      tableData.push(['Will Attend', submission.willAttend]);
+      if (submission.remarks) {
+        tableData.push(['Remarks', submission.remarks]);
+      }
+    }
 
     autoTable(doc, {
       startY: 85,
