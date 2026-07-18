@@ -44,8 +44,12 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
           className="relative"
         >
           <div className="absolute inset-0 bg-indigo-500/30 rounded-3xl blur-2xl animate-pulse" />
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 border border-white/10 flex items-center justify-center shadow-2xl">
-            <Building2 className="w-8 h-8 sm:w-10 sm:h-10 text-indigo-400 animate-pulse" />
+          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-slate-900 border border-white/10 flex items-center justify-center shadow-2xl p-2 sm:p-3">
+            <img 
+              src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
+              alt="Satkhira Government Polytechnic Institute Logo" 
+              className="w-full h-full object-contain"
+            />
           </div>
           <motion.div
             animate={{ rotate: 360 }}
@@ -70,9 +74,9 @@ export default function InitialLoader({ onComplete }: InitialLoaderProps) {
             initial={{ y: 15, opacity: 0 }}
             animate={{ y: 0, opacity: 0.6 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-[10px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] text-indigo-400 uppercase font-black"
+            className="text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] text-indigo-400 uppercase font-black"
           >
-            Satkhira Gov Polytechnic
+            Satkhira Government Polytechnic Institute
           </motion.p>
         </div>
 

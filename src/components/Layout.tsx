@@ -48,8 +48,12 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
               className="relative group cursor-pointer"
             >
               <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur group-hover:bg-blue-500/40 transition-all" />
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden border border-white/20 bg-gradient-to-br from-slate-900 to-indigo-900">
-                <Building2 className="w-6 h-6 md:w-7 md:h-7 text-indigo-400 group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden border border-white/10 bg-slate-900 p-1.5">
+                <img 
+                  src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
+                  alt="Satkhira Government Polytechnic Institute Logo" 
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                />
               </div>
             </motion.div>
             <div className="hidden sm:block">

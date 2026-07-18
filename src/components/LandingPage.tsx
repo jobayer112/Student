@@ -175,7 +175,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
         <div className="absolute inset-0 bg-slate-950/50 z-10" />
         <img 
           src={SPI_IMAGE} 
-          alt="Satkhira Polytechnic Institute" 
+          alt="Satkhira Government Polytechnic Institute" 
           className="w-full h-[500px] md:h-[650px] object-cover transition-transform duration-10000 group-hover:scale-110"
           loading="lazy"
         />

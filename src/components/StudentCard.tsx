@@ -137,16 +137,16 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                 <div className="flex justify-between items-start z-10 w-full">
                   {/* Logo and Inst Title */}
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-xl flex items-center justify-center p-1.5 border border-amber-500/30 shadow-lg">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#10111a] rounded-xl flex items-center justify-center p-1 border border-amber-500/30 shadow-lg">
                       <img 
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" 
+                        src="/spi_logo.png" 
                         alt="SPI Logo" 
-                        className="w-full h-full object-contain filter brightness-110"
+                        className="w-full h-full object-contain filter brightness-110 scale-105"
                       />
                     </div>
                     <div>
-                      <h2 className="text-[10px] sm:text-[12px] font-black text-white tracking-[0.1em] leading-none uppercase">
-                        Satkhira Polytechnic Institute
+                      <h2 className="text-[10px] sm:text-[12px] font-black text-white tracking-[0.05em] leading-tight uppercase">
+                        Satkhira Government Polytechnic Institute
                       </h2>
                       <p className="text-[7px] sm:text-[8px] font-bold text-amber-400 uppercase tracking-[0.15em] mt-1">
                         OFFICIAL FAREWELL CEREMONY 2026
@@ -337,16 +337,16 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
 
                 {/* BACK TOP HEADER */}
                 <div className="flex items-center gap-3 z-10">
-                  <div className="w-8 h-8 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
                     <img 
-                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" 
+                      src="/spi_logo.png" 
                       alt="SPI Logo" 
-                      className="w-full h-full object-contain filter brightness-110"
+                      className="w-full h-full object-contain filter brightness-110 scale-105"
                     />
                   </div>
                   <div>
-                    <h2 className="text-[10px] sm:text-[11px] font-black text-white tracking-[0.05em] leading-none uppercase">
-                      Satkhira Polytechnic Institute
+                    <h2 className="text-[10px] sm:text-[11px] font-black text-white tracking-[0.05em] leading-tight uppercase">
+                      Satkhira Government Polytechnic Institute
                     </h2>
                     <p className="text-[7px] text-amber-400 uppercase tracking-widest mt-0.5">
                       SENIOR FAREWELL CEREMONY 2026 • OFFICIAL SCHEDULE
