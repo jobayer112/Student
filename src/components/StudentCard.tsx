@@ -407,7 +407,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                   <div className="space-y-0.5">
                     <p className="text-[6px] text-slate-500 uppercase font-black">EMERGENCY CONTACT</p>
                     <p className="text-[7.5px] text-white font-black flex items-center gap-1">
-                      <Phone className="w-2.5 h-2.5 text-red-500" /> +8801XXXXXXXXX
+                      <Phone className="w-2.5 h-2.5 text-red-500" /> +8801832313998
                     </p>
                   </div>
 
