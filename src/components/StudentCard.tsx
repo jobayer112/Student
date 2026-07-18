@@ -31,13 +31,27 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file (JPG, PNG, etc.)');
+      return;
     }
+
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      toast.error('Please upload an image smaller than 2MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoUrl(reader.result as string);
+      toast.success('Photo uploaded successfully!');
+    };
+    reader.onerror = () => {
+      toast.error('Failed to upload photo. Please try again.');
+    };
+    reader.readAsDataURL(file);
   };
 
   const downloadCard = async (side: 'front' | 'back') => {
@@ -46,14 +60,12 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
 
     setIsDownloading(true);
     try {
-      // Increased timeout to allow better render completion
       await new Promise(resolve => setTimeout(resolve, 800));
       const dataUrl = await toPng(ref, { 
         cacheBust: true, 
-        pixelRatio: 3, // High-DPI print-ready quality
+        pixelRatio: 2,
         backgroundColor: '#0c0d12',
-        skipFonts: true,
-        fontEmbedCSS: ''
+        filter: (node) => node.tagName !== 'INPUT'
       });
       const link = document.createElement('a');
       link.download = `SPI-Farewell2026-${side.toUpperCase()}-${student.rollNumber}.png`;
@@ -62,7 +74,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
       toast.success('Card downloaded successfully!');
     } catch (err) {
       console.error('Failed to download card. Details:', err);
-      toast.error(`Failed to download card: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      toast.error('Download failed. Browser security may be blocking it. Please use the "Print / Download Card" button above instead, which saves as a high-quality PDF.');
     } finally {
       setIsDownloading(false);
     }
