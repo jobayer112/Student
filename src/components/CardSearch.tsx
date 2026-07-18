@@ -34,19 +34,18 @@ const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang }) => {
 
       const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
       
-      console.log('Search snap1 empty:', snap1.empty);
-      console.log('Search snap2 empty:', snap2.empty);
+      console.log('Search snap1 (contributions) empty:', snap1.empty);
+      console.log('Search snap2 (farewell_students) empty:', snap2.empty);
 
-
-      if (!snap1.empty) {
-        setResult({ 
-          student: snap1.docs[0].data() as Contribution, 
-          type: 'general' 
-        });
-      } else if (!snap2.empty) {
+      if (!snap2.empty) {
         setResult({ 
           student: snap2.docs[0].data() as FarewellStudent, 
           type: 'farewell' 
+        });
+      } else if (!snap1.empty) {
+        setResult({ 
+          student: snap1.docs[0].data() as Contribution, 
+          type: 'general' 
         });
       } else {
         setError(lang === 'bn' 
