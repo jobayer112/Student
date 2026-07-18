@@ -109,7 +109,7 @@ export const Vortex = (props: VortexProps) => {
     renderGlow(canvas, ctx);
     renderToScreen(canvas, ctx);
 
-    window.requestAnimationFrame(() => draw(canvas, ctx));
+    animationFrameId.current = window.requestAnimationFrame(() => draw(canvas, ctx));
   };
 
   const drawParticles = (ctx: CanvasRenderingContext2D) => {
@@ -177,7 +177,6 @@ export const Vortex = (props: VortexProps) => {
     ctx.moveTo(x, y);
     ctx.lineTo(x2, y2);
     ctx.stroke();
-    ctx.closePath();
     ctx.restore();
   };
 
@@ -203,13 +202,7 @@ export const Vortex = (props: VortexProps) => {
     ctx: CanvasRenderingContext2D
   ) => {
     ctx.save();
-    ctx.filter = "blur(8px) brightness(200%)";
-    ctx.globalCompositeOperation = "lighter";
-    ctx.drawImage(canvas, 0, 0);
-    ctx.restore();
-
-    ctx.save();
-    ctx.filter = "blur(4px) brightness(200%)";
+    ctx.filter = "blur(4px) brightness(150%)";
     ctx.globalCompositeOperation = "lighter";
     ctx.drawImage(canvas, 0, 0);
     ctx.restore();
@@ -225,15 +218,24 @@ export const Vortex = (props: VortexProps) => {
     ctx.restore();
   };
 
+  const animationFrameId = useRef<number>(0);
+
   useEffect(() => {
     setup();
-    window.addEventListener("resize", () => {
+    const handleResize = () => {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext("2d");
       if (canvas && ctx) {
         resize(canvas, ctx);
       }
-    });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (animationFrameId.current) {
+        window.cancelAnimationFrame(animationFrameId.current);
+      }
+    };
   }, []);
 
   return (

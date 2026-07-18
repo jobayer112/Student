@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   User, Hash, Building, BookOpen, Clock, 
   Smartphone, Mail, CheckCircle2, AlertCircle, 
@@ -21,6 +21,7 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
   const [loading, setLoading] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(true);
+  const [errorModal, setErrorModal] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<FarewellStudent>>({
     fullName: '',
     rollNumber: '',
@@ -151,7 +152,9 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
       onSuccess();
     } catch (err) {
       console.error(err);
-      toast.error('Error submitting data');
+      setErrorModal(lang === 'bn' 
+        ? 'রেজিস্ট্রেশন করতে সমস্যা হচ্ছে। দয়া করে টেকনিক্যাল সাপোর্ট এর সাথে যোগাযোগ করুন।' 
+        : 'Registration failed. Please contact technical support for assistance.');
     } finally {
       setLoading(false);
     }
@@ -162,6 +165,37 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
 
   return (
     <div className="max-w-4xl mx-auto space-y-10 py-10">
+      {/* Error Modal */}
+      <AnimatePresence>
+        {errorModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card p-8 md:p-10 rounded-[2.5rem] max-w-md w-full text-center border-red-500/30 shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-red-500" />
+              <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-red-500/10">
+                <AlertCircle className="w-10 h-10 text-red-500 animate-pulse" />
+              </div>
+              <h2 className="text-2xl font-display font-black text-white mb-4 tracking-tight">
+                {lang === 'bn' ? 'সতর্কতা' : 'Notice'}
+              </h2>
+              <p className="text-slate-300 text-lg leading-relaxed mb-10 font-medium">
+                {errorModal}
+              </p>
+              <button 
+                onClick={() => setErrorModal(null)}
+                className="w-full py-5 bg-red-600 hover:bg-red-500 text-white rounded-2xl font-black text-lg transition-all active:scale-95 shadow-xl shadow-red-600/20"
+              >
+                {lang === 'bn' ? 'ঠিক আছে' : 'Dismiss'}
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Welcome Modal */}
       {showWelcomeModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">

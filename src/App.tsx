@@ -3,15 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import Layout from './components/Layout';
 import LandingPage from './components/LandingPage';
-import ContributionForm from './components/ContributionForm';
-import SuccessScreen from './components/SuccessScreen';
-import AdminPanel from './components/AdminPanel';
 import InitialLoader from './components/InitialLoader';
-import FarewellRegistration from './components/FarewellRegistration';
+
+// Lazy load heavy components
+const ContributionForm = lazy(() => import('./components/ContributionForm'));
+const SuccessScreen = lazy(() => import('./components/SuccessScreen'));
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+const FarewellRegistration = lazy(() => import('./components/FarewellRegistration'));
+
 import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
 import { Contribution, Language } from './types';
@@ -139,66 +142,72 @@ export default function App() {
                 </motion.div>
               )}
 
-              {state === 'form' && (
-                <motion.div
-                  key="form"
-                  initial={{ opacity: 0, x: 100 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <ContributionForm 
-                    onBack={() => setState('landing')} 
-                    onSubmit={handleSubmit} 
-                    lang={lang} 
-                  />
-                </motion.div>
-              )}
+              <Suspense fallback={
+                <div className="flex items-center justify-center min-h-[60vh]">
+                  <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+                </div>
+              }>
+                {state === 'form' && (
+                  <motion.div
+                    key="form"
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <ContributionForm 
+                      onBack={() => setState('landing')} 
+                      onSubmit={handleSubmit} 
+                      lang={lang} 
+                    />
+                  </motion.div>
+                )}
 
-              {state === 'farewell-form' && (
-                <motion.div
-                  key="farewell-form"
-                  initial={{ opacity: 0, x: 100 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -100 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <FarewellRegistration 
-                    onBack={() => setState('landing')} 
-                    onSuccess={() => setState('success')} 
-                    lang={lang} 
-                  />
-                </motion.div>
-              )}
+                {state === 'farewell-form' && (
+                  <motion.div
+                    key="farewell-form"
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -100 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <FarewellRegistration 
+                      onBack={() => setState('landing')} 
+                      onSuccess={() => setState('success')} 
+                      lang={lang} 
+                    />
+                  </motion.div>
+                )}
 
-              {state === 'success' && (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <SuccessScreen 
-                    onReset={() => setState('landing')} 
-                    lang={lang} 
-                    submission={lastSubmission || undefined}
-                  />
-                </motion.div>
-              )}
+                {state === 'success' && (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <SuccessScreen 
+                      onReset={() => setState('landing')} 
+                      lang={lang} 
+                      submission={lastSubmission || undefined}
+                    />
+                  </motion.div>
+                )}
 
-              {state === 'admin' && (
-                <motion.div
-                  key="admin"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="w-full"
-                >
-                  <AdminPanel onClose={() => setState('landing')} />
-                </motion.div>
-              )}
+                {state === 'admin' && (
+                  <motion.div
+                    key="admin"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full"
+                  >
+                    <AdminPanel onClose={() => setState('landing')} />
+                  </motion.div>
+                )}
+              </Suspense>
             </AnimatePresence>
           </Layout>
         </motion.div>
