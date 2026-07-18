@@ -103,7 +103,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
               animate={{ rotateY: 0, opacity: 1 }}
               exit={{ rotateY: 90, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative w-[95%] aspect-[85.6/54] shadow-[0_20px_40px_rgba(0,0,0,0.7)] rounded-2xl overflow-hidden border border-amber-500/30"
+              className="relative w-[98%] sm:w-[95%] max-w-[500px] aspect-[85.6/54] shadow-[0_20px_40px_rgba(0,0,0,0.7)] rounded-2xl overflow-hidden border border-amber-500/30"
             >
               {/* Card Container For Print (Fixed size in export, responsive scale in UI) */}
               <div 
@@ -139,9 +139,9 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 sm:w-14 sm:h-14 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30 shadow-lg shrink-0">
                       <img 
-                        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
+                        src="/spi_logo.png" 
                         alt="SPI Logo" 
-                        className="w-full h-full object-contain filter brightness-110 scale-105"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                     <div>
@@ -310,7 +310,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
               animate={{ rotateY: 0, opacity: 1 }}
               exit={{ rotateY: -90, opacity: 0 }}
               transition={{ duration: 0.4 }}
-              className="relative w-full max-w-[630px] aspect-[85.6/54] shadow-[0_20px_50px_rgba(0,0,0,0.8)] rounded-[2.5rem] overflow-hidden border border-amber-500/20"
+              className="relative w-[98%] sm:w-[95%] max-w-[500px] aspect-[85.6/54] shadow-[0_20px_50px_rgba(0,0,0,0.8)] rounded-[2.5rem] overflow-hidden border border-amber-500/20"
             >
               {/* Back Side Card Container */}
               <div 
@@ -339,9 +339,9 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                 <div className="flex items-center gap-3 z-10">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
                     <img 
-                      src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
+                      src="/spi_logo.png" 
                       alt="SPI Logo" 
-                      className="w-full h-full object-contain filter brightness-110 scale-105"
+                      className="w-full h-full object-contain"
                     />
                   </div>
                   <div>
