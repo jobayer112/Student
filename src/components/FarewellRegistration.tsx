@@ -20,6 +20,7 @@ interface FarewellRegistrationProps {
 export default function FarewellRegistration({ onBack, onSuccess, lang }: FarewellRegistrationProps) {
   const [loading, setLoading] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(true);
   const [formData, setFormData] = useState<Partial<FarewellStudent>>({
     fullName: '',
     rollNumber: '',
@@ -60,6 +61,11 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
       validations: {
         duplicate: "এই রোল বা রেজিস্ট্রেশন নম্বর দিয়ে আগে তথ্য জমা দেওয়া হয়েছে।",
         required: "সবগুলো বাধ্যতামূলক ক্ষেত্র পূরণ করুন।"
+      },
+      welcome: {
+        title: "নির্দেশনা",
+        message: "অনুগ্রহ করে সব তথ্য সঠিকভাবে প্রদান করুন। ভুল তথ্য প্রদান করলে আপনার তথ্য যাচাই করা সম্ভব হবে না এবং রেজিস্ট্রেশন বাতিল হতে পারে।",
+        btn: "আমি বুঝতে পেরেছি"
       }
     },
     en: {
@@ -87,6 +93,11 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
       validations: {
         duplicate: "Roll or Registration number already exists.",
         required: "Please fill all required fields."
+      },
+      welcome: {
+        title: "Important Notice",
+        message: "Please ensure all information provided is accurate. Incorrect data may result in registration cancellation or verification failure.",
+        btn: "I Understand"
       }
     }
   }[lang];
@@ -151,6 +162,38 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
 
   return (
     <div className="max-w-4xl mx-auto space-y-10 py-10">
+      {/* Welcome Modal */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="glass-card p-10 rounded-[3rem] max-w-lg w-full text-center border-white/10 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-indigo-500 to-amber-500" />
+            
+            <div className="w-20 h-20 bg-amber-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <AlertCircle className="w-10 h-10 text-amber-500" />
+            </div>
+
+            <h2 className="text-3xl font-display font-black text-white mb-4 tracking-tight">
+              {content.welcome.title}
+            </h2>
+            <p className="text-slate-300 text-lg leading-relaxed mb-10 font-medium">
+              {content.welcome.message}
+            </p>
+
+            <button 
+              onClick={() => setShowWelcomeModal(false)}
+              className="w-full btn-primary py-5 rounded-2xl text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
+            >
+              <CheckCircle2 className="w-6 h-6" />
+              {content.welcome.btn}
+            </button>
+          </motion.div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>

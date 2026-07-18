@@ -43,6 +43,7 @@ interface ContributionFormProps {
 export default function ContributionForm({ onSubmit, onBack, lang }: ContributionFormProps) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(true);
 
   const { register, handleSubmit, watch, trigger, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -145,6 +146,40 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      {/* Welcome Modal */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="glass-card p-10 rounded-[3rem] max-w-lg w-full text-center border-white/10 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500" />
+            
+            <div className="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <AlertCircle className="w-10 h-10 text-indigo-400" />
+            </div>
+
+            <h2 className="text-3xl font-display font-black text-white mb-4 tracking-tight">
+              {lang === 'bn' ? 'নির্দেশনা' : 'Important Notice'}
+            </h2>
+            <p className="text-slate-300 text-lg leading-relaxed mb-10 font-medium">
+              {lang === 'bn' 
+                ? 'অনুগ্রহ করে সব তথ্য সঠিকভাবে প্রদান করুন। পেমেন্ট করার পর ট্রানজেকশন আইডি (TrxID) অবশ্যই সঠিকভাবে দিতে হবে।' 
+                : 'Please ensure all information is accurate. You must provide the correct Transaction ID (TrxID) after completing the payment.'}
+            </p>
+
+            <button 
+              onClick={() => setShowWelcomeModal(false)}
+              className="w-full btn-primary py-5 rounded-2xl text-lg font-bold flex items-center justify-center gap-3 shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
+            >
+              <Check className="w-6 h-6" />
+              {lang === 'bn' ? 'আমি বুঝতে পেরেছি' : 'I Understand'}
+            </button>
+          </motion.div>
+        </div>
+      )}
+
       <div className="flex items-center justify-center gap-3 mb-4">
         <ShieldCheck className="w-5 h-5 text-indigo-400 animate-pulse" />
         <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">SECURE REGISTRATION SYSTEM</span>
