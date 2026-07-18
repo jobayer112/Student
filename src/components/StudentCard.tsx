@@ -103,12 +103,12 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
               animate={{ rotateY: 0, opacity: 1 }}
               exit={{ rotateY: 90, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative w-[95%] max-w-[420px] aspect-[85.6/54] shadow-[0_15px_30px_rgba(0,0,0,0.6)] rounded-2xl overflow-hidden border border-amber-500/20"
+              className="relative w-[95%] aspect-[85.6/54] shadow-[0_20px_40px_rgba(0,0,0,0.7)] rounded-2xl overflow-hidden border border-amber-500/30"
             >
               {/* Card Container For Print (Fixed size in export, responsive scale in UI) */}
               <div 
                 ref={frontCardRef}
-                className="w-full h-full bg-gradient-to-br from-[#0a0a0f] via-[#12131a] to-[#050508] relative select-none p-4 sm:p-8 flex flex-col justify-between overflow-hidden"
+                className="w-full h-full bg-gradient-to-br from-[#0a0a0f] via-[#12131a] to-[#050508] relative select-none p-5 sm:p-8 flex flex-col justify-between overflow-hidden"
               >
                 {/* Red Luxury Corner Highlights */}
                 <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-red-600/15 to-transparent blur-xl rounded-full" />
@@ -206,12 +206,12 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                   {/* RIGHT: Student details + metadata */}
                   <div className="col-span-8 space-y-1.5 pl-2 border-l border-white/5">
                     <div>
-                      <h1 className="text-sm sm:text-2xl font-black text-white tracking-tight uppercase leading-tight">
+                      <h1 className="text-[clamp(14px,5vw,24px)] font-black text-white tracking-tight uppercase leading-tight">
                         {student.fullName}
                       </h1>
                       <div className="flex items-center gap-1 mt-0.5">
                         <span className="w-1 h-1 bg-red-600 rounded-full" />
-                        <p className="text-red-500 text-[7px] sm:text-[10px] font-black uppercase tracking-wider">
+                        <p className="text-red-500 text-[clamp(9px,3vw,12px)] font-black uppercase tracking-wider">
                           {student.department} Technology
                         </p>
                       </div>
@@ -220,20 +220,20 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                     {/* Metadata Grid */}
                     <div className="grid grid-cols-4 gap-1">
                       <div className="space-y-0">
-                        <span className="text-[5px] sm:text-[7px] text-amber-400 font-bold uppercase tracking-widest block">Roll</span>
-                        <p className="text-white font-black text-[9px] sm:text-sm tracking-tight">{student.rollNumber}</p>
+                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Roll</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{student.rollNumber}</p>
                       </div>
                       <div className="space-y-0">
-                        <span className="text-[5px] sm:text-[7px] text-amber-400 font-bold uppercase tracking-widest block">Session</span>
-                        <p className="text-white font-black text-[9px] sm:text-sm tracking-tight">{sessionVal}</p>
+                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Session</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{sessionVal}</p>
                       </div>
                       <div className="space-y-0">
-                        <span className="text-[5px] sm:text-[7px] text-amber-400 font-bold uppercase tracking-widest block">Sem</span>
-                        <p className="text-white font-black text-[9px] sm:text-sm tracking-tight">{semesterVal}</p>
+                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Sem</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{semesterVal}</p>
                       </div>
                       <div className="space-y-0">
-                        <span className="text-[5px] sm:text-[7px] text-amber-400 font-bold uppercase tracking-widest block">Shift</span>
-                        <p className="text-white font-black text-[9px] sm:text-sm tracking-tight">{shiftVal}</p>
+                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Shift</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{shiftVal}</p>
                       </div>
                     </div>
 

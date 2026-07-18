@@ -26,26 +26,24 @@ const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang }) => {
     setResult(null);
 
     try {
-      // First search in contributions (general students)
       const contributionsRef = collection(db, 'contributions');
+      const farewellRef = collection(db, 'farewell');
+
       const q1 = query(contributionsRef, where('rollNumber', '==', rollNumber.trim()));
-      const snap1 = await getDocs(q1);
+      const q2 = query(farewellRef, where('rollNumber', '==', rollNumber.trim()));
+
+      const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+      
+      console.log('Search snap1 empty:', snap1.empty);
+      console.log('Search snap2 empty:', snap2.empty);
+
 
       if (!snap1.empty) {
         setResult({ 
           student: snap1.docs[0].data() as Contribution, 
           type: 'general' 
         });
-        setLoading(false);
-        return;
-      }
-
-      // If not found, search in farewell students
-      const farewellRef = collection(db, 'farewell');
-      const q2 = query(farewellRef, where('rollNumber', '==', rollNumber.trim()));
-      const snap2 = await getDocs(q2);
-
-      if (!snap2.empty) {
+      } else if (!snap2.empty) {
         setResult({ 
           student: snap2.docs[0].data() as FarewellStudent, 
           type: 'farewell' 
@@ -88,7 +86,7 @@ const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang }) => {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-10 rounded-[2.5rem] border-white/5 relative overflow-hidden"
+          className="glass-card p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] border-white/5 relative overflow-hidden"
         >
           <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
             <GraduationCap className="w-32 h-32 text-white" />
