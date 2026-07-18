@@ -46,8 +46,8 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
 
     setIsDownloading(true);
     try {
-      // Small timeout to allow render completion
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Increased timeout to allow better render completion
+      await new Promise(resolve => setTimeout(resolve, 800));
       const dataUrl = await toPng(ref, { 
         cacheBust: true, 
         pixelRatio: 3, // High-DPI print-ready quality
@@ -61,8 +61,8 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
       link.click();
       toast.success('Card downloaded successfully!');
     } catch (err) {
-      console.error('Failed to download card:', err);
-      toast.error('Failed to download card. Please try again.');
+      console.error('Failed to download card. Details:', err);
+      toast.error(`Failed to download card: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsDownloading(false);
     }
@@ -170,6 +170,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
                         src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
                         alt="SPI Logo" 
                         className="w-full h-full object-contain"
+                        crossOrigin="anonymous"
                       />
                     </div>
                     <div>
@@ -370,6 +371,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
                       src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
                       alt="SPI Logo" 
                       className="w-full h-full object-contain"
+                      crossOrigin="anonymous"
                     />
                   </div>
                   <div>
