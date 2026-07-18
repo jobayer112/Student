@@ -125,6 +125,12 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
     e.preventDefault();
     if (!isAgreed) return;
     
+    // Validation
+    if (!formData.fullName || !formData.rollNumber || !formData.mobileNumber) {
+      toast.error(content.validations.required);
+      return;
+    }
+    
     setLoading(true);
     try {
       const isDuplicate = await checkDuplicates();
@@ -145,7 +151,8 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
         ...formData,
         submissionId,
         createdAt: new Date().toISOString(),
-        metadata
+        metadata,
+        cardStatus: 'pending' // Added cardStatus
       };
 
       await addDoc(collection(db, 'farewell_students'), submission);

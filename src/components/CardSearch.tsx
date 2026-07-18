@@ -27,7 +27,7 @@ const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang }) => {
 
     try {
       const contributionsRef = collection(db, 'contributions');
-      const farewellRef = collection(db, 'farewell');
+      const farewellRef = collection(db, 'farewell_students');
 
       const q1 = query(contributionsRef, where('rollNumber', '==', rollNumber.trim()));
       const q2 = query(farewellRef, where('rollNumber', '==', rollNumber.trim()));

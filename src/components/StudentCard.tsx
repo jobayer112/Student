@@ -139,7 +139,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 sm:w-14 sm:h-14 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30 shadow-lg shrink-0">
                       <img 
-                        src="/spi_logo.png" 
+                        src="/spi_logo.png?v=1" 
                         alt="SPI Logo" 
                         className="w-full h-full object-contain filter brightness-110 scale-105"
                       />
@@ -339,7 +339,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type }) => {
                 <div className="flex items-center gap-3 z-10">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
                     <img 
-                      src="/spi_logo.png" 
+                      src="/spi_logo.png?v=1" 
                       alt="SPI Logo" 
                       className="w-full h-full object-contain filter brightness-110 scale-105"
                     />
