@@ -14,21 +14,28 @@ const ContributionForm = lazy(() => import('./components/ContributionForm'));
 const SuccessScreen = lazy(() => import('./components/SuccessScreen'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const FarewellRegistration = lazy(() => import('./components/FarewellRegistration'));
+const CardSearch = lazy(() => import('./components/CardSearch'));
 
 import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from './lib/firebase';
-import { Contribution, Language } from './types';
+import { Contribution, FarewellStudent, Language } from './types';
 import toast from 'react-hot-toast';
 
-type AppState = 'landing' | 'form' | 'success' | 'admin' | 'farewell-form';
+type AppState = 'landing' | 'form' | 'success' | 'admin' | 'farewell-form' | 'search-card';
 
 export default function App() {
   const [state, setState] = useState<AppState>('landing');
   const [isLoading, setIsLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [lang, setLang] = useState<Language>('bn');
-  const [lastSubmission, setLastSubmission] = useState<Contribution | null>(null);
+  const [lastSubmission, setLastSubmission] = useState<Contribution | FarewellStudent | null>(null);
   const [contributions, setContributions] = useState<Contribution[]>([]);
+
+  // Expose search function to window for LandingPage button
+  React.useEffect(() => {
+    (window as any).onSearchCard = () => setState('search-card');
+    return () => { delete (window as any).onSearchCard; };
+  }, []);
 
   React.useEffect(() => {
     const q = query(collection(db, 'contributions'), orderBy('createdAt', 'desc'));
@@ -173,7 +180,10 @@ export default function App() {
                   >
                     <FarewellRegistration 
                       onBack={() => setState('landing')} 
-                      onSuccess={() => setState('success')} 
+                      onSuccess={(data) => {
+                        setLastSubmission(data);
+                        setState('success');
+                      }} 
                       lang={lang} 
                     />
                   </motion.div>
@@ -205,6 +215,21 @@ export default function App() {
                     className="w-full"
                   >
                     <AdminPanel onClose={() => setState('landing')} />
+                  </motion.div>
+                )}
+
+                {state === 'search-card' && (
+                  <motion.div
+                    key="search-card"
+                    initial={{ opacity: 0, x: -100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 100 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <CardSearch 
+                      onBack={() => setState('landing')} 
+                      lang={lang} 
+                    />
                   </motion.div>
                 )}
               </Suspense>

@@ -3,14 +3,15 @@ import { motion } from 'motion/react';
 import { CheckCircle2, Home, Download, Share2, Heart, Sparkles } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Contribution } from '../types';
+import { Contribution, FarewellStudent } from '../types';
 import { format } from 'date-fns';
 import { toast } from 'react-hot-toast';
+import StudentCard from './StudentCard';
 
 interface SuccessScreenProps {
   onReset: () => void;
   lang: 'bn' | 'en';
-  submission?: Contribution;
+  submission?: Contribution | FarewellStudent;
 }
 
 export default function SuccessScreen({ onReset, lang, submission }: SuccessScreenProps) {
@@ -183,7 +184,16 @@ export default function SuccessScreen({ onReset, lang, submission }: SuccessScre
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/10 blur-3xl translate-y-1/2 -translate-x-1/2" />
         
         <div className="relative z-10 space-y-6">
-          <p className="text-slate-300 text-lg leading-relaxed">
+          {submission && (
+            <div className="mb-8">
+              <StudentCard 
+                student={submission} 
+                type={'willAttend' in submission ? 'farewell' : 'general'} 
+              />
+            </div>
+          )}
+          
+          <p className="text-slate-300 text-lg leading-relaxed text-center">
             {content.cardText}
           </p>
           

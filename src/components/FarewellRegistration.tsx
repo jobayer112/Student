@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 
 interface FarewellRegistrationProps {
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (submission: any) => void;
   lang: Language;
 }
 
@@ -141,15 +141,17 @@ export default function FarewellRegistration({ onBack, onSuccess, lang }: Farewe
         ip: 'Pending' // Would normally come from server
       };
 
-      await addDoc(collection(db, 'farewell_students'), {
+      const submission = {
         ...formData,
         submissionId,
         createdAt: new Date().toISOString(),
         metadata
-      });
+      };
+
+      await addDoc(collection(db, 'farewell_students'), submission);
 
       toast.success(lang === 'bn' ? 'তথ্য সফলভাবে সংরক্ষিত হয়েছে' : 'Information saved successfully');
-      onSuccess();
+      onSuccess(submission);
     } catch (err) {
       console.error(err);
       setErrorModal(lang === 'bn' 
