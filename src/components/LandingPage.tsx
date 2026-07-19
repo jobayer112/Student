@@ -142,29 +142,6 @@ const LandingPage = React.memo(({ onStart, onFarewell, lang, contributions }: La
 
   return (
     <div className="space-y-16 relative">
-      {/* Search Card Floating Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className="fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-[280px] sm:max-w-sm z-50 px-4"
-      >
-        <button 
-          onClick={() => (window as any).onSearchCard?.()}
-          className="w-full flex items-center justify-between p-1 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full hover:bg-white/20 transition-all group cursor-pointer shadow-2xl"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20 group-hover:scale-110 transition-transform">
-              <IdCard className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-            </div>
-            <span className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-widest">{content.searchCardBtn}</span>
-          </div>
-          <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-red-500/10 rounded-full group-hover:bg-red-500/20 transition-colors mr-1">
-            <span className="text-[8px] sm:text-[9px] font-black text-red-500 uppercase tracking-tighter">{content.searchCardTag}</span>
-          </div>
-        </button>
-      </motion.div>
-
       {/* Dynamic Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse" />

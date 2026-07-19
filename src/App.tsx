@@ -197,6 +197,7 @@ export default function App() {
             onLanguageChange={setLang} 
             onAdminClick={() => setState('admin')} 
             onLogoClick={() => setState('landing')}
+            onSearchCard={() => setState('search-card')}
             currentLang={lang}
             viewMode={viewMode}
             onViewModeChange={setViewMode}

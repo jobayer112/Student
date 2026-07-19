@@ -22,7 +22,7 @@ const PROXIED_DEFAULT_LOGO = `/api/proxy-image?url=${encodeURIComponent(DEFAULT_
 
 const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, viewMode }) => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [logoDataUrl, setLogoDataUrl] = useState<string>(PROXIED_DEFAULT_LOGO);
+  const [logoDataUrl, setLogoDataUrl] = useState<string>(DEFAULT_LOGO);
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [isDownloading, setIsDownloading] = useState(false);
   
@@ -42,7 +42,7 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
         };
         reader.readAsDataURL(blob);
       } catch (err) {
-        console.error('Failed to convert logo to base64, keeping proxied image URL:', err);
+        console.error('Failed to convert logo to base64, keeping default direct URL:', err);
       }
     };
     fetchLogo();
@@ -195,7 +195,10 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                   <div className="flex items-center gap-2.5 w-full">
                     <div className="w-9 h-9 sm:w-14 sm:h-14 bg-[#10111a] rounded-xl flex items-center justify-center p-1 border border-amber-500/30 shadow-lg shrink-0">
                       <img 
-                        src={logoDataUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10"} 
+                        src={logoDataUrl} 
+                        onError={(e) => {
+                          e.currentTarget.src = DEFAULT_LOGO;
+                        }}
                         alt="SPI Logo" 
                         className="w-full h-full object-contain"
                       />
@@ -221,15 +224,25 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                       <div className="w-16 h-16 sm:w-28 sm:h-28 rounded-full p-0.5 bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-600 shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-all duration-300 group-hover/photo:shadow-[0_0_15px_rgba(239,68,68,0.5)]">
                         <div className="w-full h-full rounded-full overflow-hidden border-2 border-slate-950 bg-slate-950 relative flex items-center justify-center">
                           {photoUrl ? (
-                            <img 
-                              src={photoUrl} 
-                              alt={student.fullName} 
-                              className="w-full h-full object-cover"
-                            />
+                            <div className="w-full h-full relative group">
+                              <img 
+                                src={photoUrl} 
+                                alt={student.fullName} 
+                                className="w-full h-full object-cover"
+                              />
+                              {/* Overlay tap button inside the circle on hover/active */}
+                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center">
+                                <span className="bg-gradient-to-r from-red-600 to-amber-500 px-2.5 py-1 rounded-full text-white text-[5px] sm:text-[9px] font-black uppercase tracking-wider border border-white/10 shadow-lg">
+                                  CHANGE
+                                </span>
+                              </div>
+                            </div>
                           ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 p-1 text-center bg-[#090a0f]">
-                              <User className="w-6 h-6 text-slate-400" />
-                              <span className="text-[5px] font-bold uppercase tracking-widest text-amber-400/80 mt-0.5">Add</span>
+                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 p-1 text-center bg-[#090a0f] relative">
+                              <User className="w-6 h-6 text-slate-400 mb-0.5" />
+                              <div className="px-2 py-0.5 bg-gradient-to-r from-red-600 to-amber-500 rounded-full text-white text-[5px] sm:text-[9px] font-black uppercase tracking-wider border border-white/15 shadow-md">
+                                TAP TO ADD
+                              </div>
                             </div>
                           )}
                           
@@ -242,11 +255,6 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                             title="Upload portrait photo"
                           />
                         </div>
-                      </div>
-
-                      {/* Floating edit camera icon */}
-                      <div className="absolute bottom-0 right-0 bg-gradient-to-r from-red-600 to-amber-500 p-1 rounded-full border border-amber-300/30 shadow-lg pointer-events-none">
-                        <Camera className="w-2.5 h-2.5 text-white" />
                       </div>
                     </div>
                     <span className="text-[6px] font-black text-slate-500 uppercase tracking-widest mt-1 block">PORTRAIT</span>
@@ -367,7 +375,10 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                 <div className="flex items-center gap-3 z-10">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
                     <img 
-                      src={logoDataUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10"} 
+                      src={logoDataUrl} 
+                      onError={(e) => {
+                        e.currentTarget.src = DEFAULT_LOGO;
+                      }}
                       alt="SPI Logo" 
                       className="w-full h-full object-contain"
                     />
