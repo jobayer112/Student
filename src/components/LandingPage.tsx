@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { 
   ArrowRight, ShieldCheck, Users, Calendar, 
@@ -6,9 +6,10 @@ import {
   AlertTriangle, IdCard
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { Vortex } from './ui/vortex';
 import { toast } from 'react-hot-toast';
 import { Contribution } from '../types';
+
+const Vortex = lazy(() => import('./ui/vortex').then(m => ({ default: m.Vortex })));
 
 interface LandingPageProps {
   onStart: () => void;
@@ -17,7 +18,7 @@ interface LandingPageProps {
   contributions: Contribution[];
 }
 
-export default function LandingPage({ onStart, onFarewell, lang, contributions }: LandingPageProps) {
+const LandingPage = React.memo(({ onStart, onFarewell, lang, contributions }: LandingPageProps) => {
   const content = {
     bn: {
       title: "বিদায় সংবর্ধনা ২০২৬",
@@ -100,12 +101,19 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
 
   const SPI_IMAGE = "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-polytechnic-satkhira/2024/12/5f51302a85fd44809961b01184e02303.jpg";
 
-  const totalCount = contributions.length;
-  const verifiedCount = contributions.filter(c => c.paymentStatus === 'Verified').length;
-  const pendingCount = contributions.filter(c => c.paymentStatus === 'Pending').length;
-  const totalAmount = verifiedCount * 150;
+  const { totalCount, verifiedCount, pendingCount, totalAmount, lastThreeNames } = useMemo(() => {
+    const verified = contributions.filter(c => c.paymentStatus === 'Verified').length;
+    const pending = contributions.filter(c => c.paymentStatus === 'Pending').length;
+    return {
+      totalCount: contributions.length,
+      verifiedCount: verified,
+      pendingCount: pending,
+      totalAmount: verified * 150,
+      lastThreeNames: contributions.slice(0, 3).map(c => c.fullName)
+    };
+  }, [contributions]);
 
-  const dynamicStats = [
+  const dynamicStats = useMemo(() => [
     { 
       label: lang === 'bn' ? "মোট নিবন্ধিত ছাত্র-ছাত্রী" : "Total Registered", 
       value: lang === 'bn' ? `${totalCount} জন` : `${totalCount} Students`, 
@@ -130,9 +138,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       icon: CreditCard, 
       color: "purple" 
     }
-  ];
-
-  const lastThreeNames = contributions.slice(0, 3).map(c => c.fullName);
+  ], [lang, totalCount, verifiedCount, pendingCount, totalAmount]);
 
   return (
     <div className="space-y-16 relative">
@@ -177,7 +183,7 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
           src={SPI_IMAGE} 
           alt="Satkhira Government Polytechnic Institute" 
           className="w-full h-[500px] md:h-[650px] object-cover transition-transform duration-10000 group-hover:scale-110"
-          loading="lazy"
+          fetchPriority="high"
         />
         
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center p-8">
@@ -515,38 +521,40 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
         viewport={{ once: true }}
         className="w-full rounded-[2.5rem] overflow-hidden h-[400px] md:h-[500px] relative border border-white/5 shadow-2xl bg-black"
       >
-        <Vortex
-          backgroundColor="#020617"
-          rangeY={150}
-          particleCount={250}
-          className="flex items-center flex-col justify-center px-4 md:px-10 py-12 w-full h-full"
-        >
-          <Sparkles className="w-8 h-8 text-indigo-400 mb-4 animate-pulse" />
-          <h2 className="text-white text-2xl md:text-5xl font-display font-black text-center tracking-tight">
-            {lang === 'en' ? 'Interactive Digital Space' : 'ইন্টারেক্টিভ ডিজিটাল স্পেস'}
-          </h2>
-          <p className="text-slate-300 text-xs md:text-sm max-w-lg mt-4 text-center leading-relaxed">
-            {lang === 'en' 
-              ? 'Experience the flow of modern tech. Drag, hover, and explore our high-speed particle system designed for digital innovation at Satkhira Government Polytechnic Institute.'
-              : 'আধুনিক প্রযুক্তির প্রবাহ অনুভব করুন। সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউটের ডিজিটাল উদ্ভাবনের জন্য ডিজাইন করা আমাদের হাই-স্পিড পার্টিকেল সিস্টেমটি অন্বেষণ করুন।'}
-          </p>
-          <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
-            <button 
-              onClick={onStart}
-              className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition duration-200 active:scale-95 shadow-lg shadow-indigo-500/20"
-            >
-              {lang === 'en' ? 'Start Contribution' : 'অবদান শুরু করুন'}
-            </button>
-            <a 
-              href="https://wa.me/8801832313998?text=Hello%20SPI%20Portal%20Support!%20I%20need%20assistance%20regarding%20the%20Senior%20Farewell%20contribution." 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="px-6 py-3 text-white border border-white/10 hover:bg-white/5 transition duration-200 rounded-xl font-bold text-xs uppercase tracking-widest"
-            >
-              {lang === 'en' ? 'Get Support' : 'সাপোর্ট নিন'}
-            </a>
-          </div>
-        </Vortex>
+        <Suspense fallback={<div className="flex items-center justify-center w-full h-full bg-[#020617] text-white">Loading interactive space...</div>}>
+          <Vortex
+            backgroundColor="#020617"
+            rangeY={150}
+            particleCount={250}
+            className="flex items-center flex-col justify-center px-4 md:px-10 py-12 w-full h-full"
+          >
+            <Sparkles className="w-8 h-8 text-indigo-400 mb-4 animate-pulse" />
+            <h2 className="text-white text-2xl md:text-5xl font-display font-black text-center tracking-tight">
+              {lang === 'en' ? 'Interactive Digital Space' : 'ইন্টারেক্টিভ ডিজিটাল স্পেস'}
+            </h2>
+            <p className="text-slate-300 text-xs md:text-sm max-w-lg mt-4 text-center leading-relaxed">
+              {lang === 'en' 
+                ? 'Experience the flow of modern tech. Drag, hover, and explore our high-speed particle system designed for digital innovation at Satkhira Government Polytechnic Institute.'
+                : 'আধুনিক প্রযুক্তির প্রবাহ অনুভব করুন। সাতক্ষীরা সরকারি পলিটেকনিক ইনস্টিটিউটের ডিজিটাল উদ্ভাবনের জন্য ডিজাইন করা আমাদের হাই-স্পিড পার্টিকেল সিস্টেমটি অন্বেষণ করুন।'}
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
+              <button 
+                onClick={onStart}
+                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-xl font-bold text-xs uppercase tracking-widest transition duration-200 active:scale-95 shadow-lg shadow-indigo-500/20"
+              >
+                {lang === 'en' ? 'Start Contribution' : 'অবদান শুরু করুন'}
+              </button>
+              <a 
+                href="https://wa.me/8801832313998?text=Hello%20SPI%20Portal%20Support!%20I%20need%20assistance%20regarding%20the%20Senior%20Farewell%20contribution." 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="px-6 py-3 text-white border border-white/10 hover:bg-white/5 transition duration-200 rounded-xl font-bold text-xs uppercase tracking-widest"
+              >
+                {lang === 'en' ? 'Get Support' : 'সাপোর্ট নিন'}
+              </a>
+            </div>
+          </Vortex>
+        </Suspense>
       </motion.div>
 
       {/* Notice Bar */}
@@ -564,4 +572,6 @@ export default function LandingPage({ onStart, onFarewell, lang, contributions }
       </motion.div>
     </div>
   );
-}
+});
+
+export default LandingPage;

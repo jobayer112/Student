@@ -14,7 +14,7 @@ interface LayoutProps {
   onViewModeChange: (mode: 'mobile' | 'desktop') => void;
 }
 
-export default function Layout({ children, onLanguageChange, onAdminClick, onLogoClick, currentLang = 'bn', viewMode, onViewModeChange }: LayoutProps) {
+const Layout = React.memo(function Layout({ children, onLanguageChange, onAdminClick, onLogoClick, currentLang = 'bn', viewMode, onViewModeChange }: LayoutProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -55,6 +55,7 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
                   src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
                   alt="Satkhira Government Polytechnic Institute Logo" 
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                  fetchPriority="high"
                 />
               </div>
             </motion.div>
@@ -117,4 +118,6 @@ export default function Layout({ children, onLanguageChange, onAdminClick, onLog
       </footer>
     </div>
   );
-}
+});
+
+export default Layout;

@@ -17,7 +17,7 @@ interface StudentCardProps {
   viewMode: 'mobile' | 'desktop';
 }
 
-const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) => {
+const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, viewMode }) => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
@@ -531,6 +531,6 @@ const StudentCard: React.FC<StudentCardProps> = ({ student, type, viewMode }) =>
 
     </div>
   );
-};
+});
 
 export default StudentCard;
