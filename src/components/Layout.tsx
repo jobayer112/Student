@@ -38,7 +38,7 @@ const Layout = React.memo(function Layout({ children, onLanguageChange, onAdminC
       </div>
 
       {/* Navigation */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      <header className={`absolute top-0 w-full z-50 transition-all duration-500 ${
         scrolled ? 'py-3 bg-slate-950/80 backdrop-blur-2xl border-b border-white/5 shadow-2xl' : 'py-6'
       }`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
@@ -52,7 +52,7 @@ const Layout = React.memo(function Layout({ children, onLanguageChange, onAdminC
               <div className="absolute inset-0 bg-blue-500/20 rounded-2xl blur group-hover:bg-blue-500/40 transition-all" />
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden border border-white/10 bg-slate-900 p-1.5">
                 <img 
-                  src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png" 
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10" 
                   alt="Satkhira Government Polytechnic Institute Logo" 
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                   fetchPriority="high"
@@ -65,13 +65,6 @@ const Layout = React.memo(function Layout({ children, onLanguageChange, onAdminC
           </div>
 
           <div className="flex items-center gap-4 md:gap-8">
-            <button 
-              onClick={() => onViewModeChange(viewMode === 'mobile' ? 'desktop' : 'mobile')}
-              className="flex items-center gap-2 px-3 py-2 glass-card hover:bg-white/10 rounded-2xl transition-all text-xs font-black text-white uppercase tracking-widest"
-            >
-              <span className={`w-2 h-2 rounded-full ${viewMode === 'desktop' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
-              {viewMode}
-            </button>
             <button 
               onClick={() => onLanguageChange?.(currentLang === 'bn' ? 'en' : 'bn')}
               className="flex items-center gap-3 px-4 py-2 glass-card hover:bg-white/10 rounded-2xl transition-all group text-xs md:text-sm font-black text-white uppercase tracking-widest"

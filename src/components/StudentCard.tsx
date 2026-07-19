@@ -17,28 +17,32 @@ interface StudentCardProps {
   viewMode: 'mobile' | 'desktop';
 }
 
+const DEFAULT_LOGO = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10';
+const PROXIED_DEFAULT_LOGO = `/api/proxy-image?url=${encodeURIComponent(DEFAULT_LOGO)}`;
+
 const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, viewMode }) => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
+  const [logoDataUrl, setLogoDataUrl] = useState<string>(PROXIED_DEFAULT_LOGO);
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [isDownloading, setIsDownloading] = useState(false);
   
   const frontCardRef = useRef<HTMLDivElement>(null);
   const backCardRef = useRef<HTMLDivElement>(null);
 
-  // Pre-load logo to avoid CORS issues in export
+  // Pre-load logo as base64 to avoid CORS issues in export
   React.useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await fetch('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png');
+        const response = await fetch(PROXIED_DEFAULT_LOGO);
+        if (!response.ok) throw new Error('Proxy returned non-ok status');
         const blob = await response.blob();
         const reader = new FileReader();
         reader.onloadend = () => {
           setLogoDataUrl(reader.result as string);
         };
         reader.readAsDataURL(blob);
-      } catch (e) {
-        console.error('Failed to load logo:', e);
+      } catch (err) {
+        console.error('Failed to convert logo to base64, keeping proxied image URL:', err);
       }
     };
     fetchLogo();
@@ -84,8 +88,7 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
         cacheBust: true, 
         pixelRatio: 2,
         backgroundColor: '#0c0d12',
-        filter: (node) => node.tagName !== 'INPUT',
-        useCORS: true
+        filter: (node) => node.tagName !== 'INPUT'
       });
       const link = document.createElement('a');
       link.download = `SPI-Farewell2026-${side.toUpperCase()}-${student.rollNumber}.png`;
@@ -135,14 +138,7 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
         </button>
       </div>
 
-      {/* View Mode Warning and Print Button */}
-      {viewMode === 'mobile' && (
-        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mt-4 text-center mx-4">
-          <p className="text-amber-400 text-xs font-bold">
-            💡 Switch to Desktop Mode in the top header for better download functionality.
-          </p>
-        </div>
-      )}
+
       
       <button
         onClick={handlePrint}
@@ -162,7 +158,7 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
               animate={{ rotateY: 0, opacity: 1 }}
               exit={{ rotateY: 90, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative w-[98%] sm:w-[95%] max-w-[500px] aspect-[85.6/54] shadow-[0_20px_40px_rgba(0,0,0,0.7)] rounded-2xl overflow-hidden border border-amber-500/30"
+              className="relative w-[98%] sm:w-[95%] max-w-[500px] aspect-[85.6/54] shadow-[0_20px_40px_rgba(0,0,0,0.7)] rounded-[1.5rem] overflow-hidden border border-amber-500/30"
             >
               {/* Card Container For Print (Fixed size in export, responsive scale in UI) */}
               <div 
@@ -190,35 +186,28 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                 </svg>
 
                 {/* Soft glow borders */}
-                <div className="absolute inset-2 border border-white/5 rounded-[2rem] pointer-events-none" />
-                <div className="absolute inset-[10px] border border-amber-500/10 rounded-[1.8rem] pointer-events-none" />
+                <div className="absolute inset-2 border border-white/5 rounded-[1.2rem] pointer-events-none" />
+                <div className="absolute inset-[10px] border border-amber-500/10 rounded-[1.1rem] pointer-events-none" />
 
                 {/* TOP HEADER */}
                 <div className="flex justify-between items-start z-10 w-full">
                   {/* Logo and Inst Title */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 sm:w-14 sm:h-14 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30 shadow-lg shrink-0">
+                  <div className="flex items-center gap-2.5 w-full">
+                    <div className="w-9 h-9 sm:w-14 sm:h-14 bg-[#10111a] rounded-xl flex items-center justify-center p-1 border border-amber-500/30 shadow-lg shrink-0">
                       <img 
-                        src={logoDataUrl || "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png"} 
+                        src={logoDataUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10"} 
                         alt="SPI Logo" 
                         className="w-full h-full object-contain"
                       />
                     </div>
                     <div>
-                      <h2 className="text-[8px] sm:text-[12px] font-black text-white tracking-[0.05em] leading-tight uppercase">
+                      <h2 className="text-[10px] sm:text-[15px] font-black text-white tracking-[0.05em] leading-tight uppercase font-sans">
                         Satkhira Government Polytechnic Institute
                       </h2>
-                      <p className="text-[6px] sm:text-[8px] font-bold text-amber-400 uppercase tracking-[0.15em] mt-0.5">
+                      <p className="text-[7px] sm:text-[10px] font-bold text-amber-400 uppercase tracking-[0.15em] mt-0.5">
                         OFFICIAL FAREWELL CEREMONY 2026
                       </p>
                     </div>
-                  </div>
-
-                  {/* Ribbon Badge */}
-                  <div className="bg-gradient-to-b from-red-700 via-red-600 to-red-800 px-3 py-1.5 rounded-lg shadow-lg border border-amber-500/30 text-center flex flex-col items-center">
-                    <Sparkles className="w-3 h-3 text-amber-300 animate-pulse mb-0.5" />
-                    <span className="text-[6px] font-black text-amber-200 uppercase tracking-widest leading-none">OFFICIAL</span>
-                    <span className="text-[5px] font-black text-white uppercase tracking-widest leading-none mt-0.5">EVENT PASS</span>
                   </div>
                 </div>
 
@@ -264,14 +253,14 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                   </div>
 
                   {/* RIGHT: Student details + metadata */}
-                  <div className="col-span-8 space-y-1.5 pl-2 border-l border-white/5">
+                  <div className="col-span-8 space-y-1.5 pl-2.5 border-l border-white/5">
                     <div>
-                      <h1 className="text-[clamp(14px,5vw,24px)] font-black text-white tracking-tight uppercase leading-tight">
+                      <h1 className="text-[clamp(14px,5vw,23px)] font-black tracking-tight text-white uppercase leading-tight bg-gradient-to-r from-white via-white to-amber-200 bg-clip-text text-transparent">
                         {student.fullName}
                       </h1>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <span className="w-1 h-1 bg-red-600 rounded-full" />
-                        <p className="text-red-500 text-[clamp(9px,3vw,12px)] font-black uppercase tracking-wider">
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                        <p className="text-red-400 text-[clamp(9px,3vw,11.5px)] font-black uppercase tracking-wider">
                           {student.department} Technology
                         </p>
                       </div>
@@ -280,37 +269,36 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                     {/* Metadata Grid */}
                     <div className="grid grid-cols-4 gap-1">
                       <div className="space-y-0">
-                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Roll</span>
-                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{student.rollNumber}</p>
+                        <span className="text-[clamp(6px,2vw,8.5px)] text-amber-400/90 font-bold uppercase tracking-widest block">Roll</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,13.5px)] tracking-tight">{student.rollNumber}</p>
                       </div>
                       <div className="space-y-0">
-                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Session</span>
-                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{sessionVal}</p>
+                        <span className="text-[clamp(6px,2vw,8.5px)] text-amber-400/90 font-bold uppercase tracking-widest block">Session</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,13.5px)] tracking-tight">{sessionVal}</p>
                       </div>
                       <div className="space-y-0">
-                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Sem</span>
-                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{semesterVal}</p>
+                        <span className="text-[clamp(6px,2vw,8.5px)] text-amber-400/90 font-bold uppercase tracking-widest block">Sem</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,13.5px)] tracking-tight">{semesterVal}</p>
                       </div>
                       <div className="space-y-0">
-                        <span className="text-[clamp(6px,2vw,9px)] text-amber-400 font-bold uppercase tracking-widest block">Shift</span>
-                        <p className="text-white font-black text-[clamp(10px,3.5vw,14px)] tracking-tight">{shiftVal}</p>
+                        <span className="text-[clamp(6px,2vw,8.5px)] text-amber-400/90 font-bold uppercase tracking-widest block">Shift</span>
+                        <p className="text-white font-black text-[clamp(10px,3.5vw,13.5px)] tracking-tight">{shiftVal}</p>
                       </div>
                     </div>
 
-                    {/* Event Schedule Info Banner */}
-                    <div className="bg-white/5 rounded-lg p-1.5 border border-white/5 flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-amber-400" />
+                    {/* Premium Department & Graduation Badge */}
+                    <div className="bg-slate-950/60 rounded-xl p-2 border border-white/5 flex items-center justify-between shadow-inner">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         <div>
-                          <p className="text-[5px] text-slate-400 font-bold uppercase">Date</p>
-                          <p className="text-[7px] text-white font-black">14 Jun, 03:00 PM</p>
+                          <p className="text-[5px] text-slate-400 font-bold uppercase tracking-wider">Status</p>
+                          <p className="text-[7.5px] text-emerald-400 font-black uppercase tracking-wider">OFFICIAL GRADUAND</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 border-l border-white/5 pl-1.5">
-                        <MapPin className="w-3 h-3 text-red-500" />
+                      <div className="flex items-center gap-1.5 border-l border-white/5 pl-2">
                         <div>
-                          <p className="text-[5px] text-slate-400 font-bold uppercase">Venue</p>
-                          <p className="text-[7px] text-white font-black">SPI Campus</p>
+                          <p className="text-[5px] text-slate-400 font-bold uppercase tracking-wider">Department</p>
+                          <p className="text-[7.5px] text-amber-400 font-black uppercase tracking-wider">Civil Division</p>
                         </div>
                       </div>
                     </div>
@@ -321,40 +309,20 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                 {/* BOTTOM FOOTER */}
                 <div className="flex justify-between items-center z-10 pt-2 border-t border-white/5 w-full">
                   {/* Left: Validation message */}
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-green-500" />
-                      <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest">
-                        Valid only during Farewell Ceremony
-                      </p>
-                    </div>
-                    <p className="text-[6px] font-black text-amber-500/60 uppercase tracking-widest pl-5.5">
-                      Design By Zobaer
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-green-500 animate-pulse" />
+                    <p className="text-[7px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                      Valid only during Farewell Ceremony
                     </p>
                   </div>
 
-                  {/* Center: Luxury Ribbon Badge */}
-                  <div className="px-4 py-1 bg-gradient-to-r from-red-600/30 via-amber-500/30 to-red-600/30 border border-amber-500/30 rounded-full flex items-center justify-center gap-1.5">
-                    <span className="text-[7px] font-black text-amber-300 uppercase tracking-widest">
-                      ★ OFFICIAL EVENT PASS ★
-                    </span>
-                  </div>
-
-                  {/* Right: Signature & QR Code */}
+                  {/* Right: QR Code (Clean & centered in right corner) */}
                   <div className="flex items-center gap-4">
-                    {/* Committee Signature representation */}
-                    <div className="text-right">
-                      <svg className="w-16 h-6 text-amber-300 opacity-80 inline-block" viewBox="0 0 100 30" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M 10 15 Q 25 5 35 20 T 55 10 T 75 25 T 90 12" strokeLinecap="round" />
-                      </svg>
-                      <p className="text-[5px] text-slate-500 font-bold uppercase tracking-widest leading-none mt-0.5">EVENT COMMITTEE</p>
-                    </div>
-
                     {/* QR Code */}
-                    <div className="p-1 bg-white rounded-lg flex items-center justify-center shadow-lg">
+                    <div className="p-1 bg-white rounded-lg flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300">
                       <QRCode 
-                        value={`https://civil-portal.edu/verify/${student.submissionId}`} 
-                        size={32}
+                        value={typeof window !== 'undefined' ? `${window.location.origin}/?verify=${student.submissionId}` : `https://civil-portal-satkhira.web.app/?verify=${student.submissionId}`} 
+                        size={48}
                         level="M"
                       />
                     </div>
@@ -370,7 +338,7 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
               animate={{ rotateY: 0, opacity: 1 }}
               exit={{ rotateY: -90, opacity: 0 }}
               transition={{ duration: 0.4 }}
-              className="relative w-[98%] sm:w-[95%] max-w-[500px] aspect-[85.6/54] shadow-[0_20px_50px_rgba(0,0,0,0.8)] rounded-[2.5rem] overflow-hidden border border-amber-500/20"
+              className="relative w-[98%] sm:w-[95%] max-w-[500px] aspect-[85.6/54] shadow-[0_20px_50px_rgba(0,0,0,0.8)] rounded-[1.5rem] overflow-hidden border border-amber-500/20"
             >
               {/* Back Side Card Container */}
               <div 
@@ -392,14 +360,14 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                   <circle cx="15%" cy="70%" r="140" fill="none" stroke="#d97706" strokeWidth="0.8" strokeDasharray="4,4" />
                 </svg>
 
-                <div className="absolute inset-2 border border-white/5 rounded-[2rem] pointer-events-none" />
-                <div className="absolute inset-[10px] border border-amber-500/10 rounded-[1.8rem] pointer-events-none" />
+                <div className="absolute inset-2 border border-white/5 rounded-[1.2rem] pointer-events-none" />
+                <div className="absolute inset-[10px] border border-amber-500/10 rounded-[1.1rem] pointer-events-none" />
 
                 {/* BACK TOP HEADER */}
                 <div className="flex items-center gap-3 z-10">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#10111a] rounded-lg flex items-center justify-center p-1 border border-amber-500/30">
                     <img 
-                      src={logoDataUrl || "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgG-gXAObx1TDc6U64SMLNk5Pgk5tw_j1uAnD3XTLmDirXuHxvNXOjxe1NgHBVIR2YOi1vb37KrUcZPs9Oc_otqY8T3F_exoUj0BWlIr-sx7EtnoIKemxHinnDYR77HIqerMdnGqEfrV6o0Vn2BSIJ6TzyNdw8z2ryV-B-YUu7rFVcxyKdcaOQnUQEDn_4/s320-rw/images__1_-removebg-preview.png"} 
+                      src={logoDataUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtnwYM9AjexEoF1f1w6hZVGdD3M1KoLWRWFMNqo9SIsu4nyWcR1gJ0LfM&s=10"} 
                       alt="SPI Logo" 
                       className="w-full h-full object-contain"
                     />
@@ -480,12 +448,12 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
                   <div className="flex items-center gap-2">
                     <div className="text-right">
                       <p className="text-[5px] text-slate-500 font-bold uppercase tracking-widest leading-none">SCAN FOR</p>
-                      <p className="text-[6px] text-white font-black uppercase tracking-wider">EVENT DETAILS</p>
+                      <p className="text-[6.5px] text-white font-black uppercase tracking-wider">VERIFICATION</p>
                     </div>
                     <div className="p-1 bg-white rounded-lg flex items-center justify-center">
                       <QRCode 
-                        value="https://satkhira-polytechnic.edu/farewell2026" 
-                        size={28}
+                        value={typeof window !== 'undefined' ? `${window.location.origin}/?verify=${student.submissionId}` : `https://civil-portal-satkhira.web.app/?verify=${student.submissionId}`} 
+                        size={48}
                         level="M"
                       />
                     </div>
@@ -523,9 +491,8 @@ const StudentCard: React.FC<StudentCardProps> = React.memo(({ student, type, vie
       </div>
 
       <div className="bg-white/5 border border-white/5 rounded-2xl p-4 w-full max-w-[420px] text-center mt-2">
-        <p className="text-xs text-slate-300 leading-relaxed space-y-2">
+        <p className="text-xs text-slate-300 leading-relaxed">
           <span className="block font-bold text-white">আপনার রোল নম্বর ব্যবহার করে কার্ডটি ডাউনলোড করুন।</span>
-          <span className="block text-red-400 font-bold">কার্ডটি নিতে অবশ্যই Desktop mode এ থাকতে হবে।</span>
         </p>
       </div>
 
