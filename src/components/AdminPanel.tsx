@@ -44,6 +44,7 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
   const [editingFarewell, setEditingFarewell] = useState<FarewellStudent | null>(null);
   const [modalData, setModalData] = useState<Partial<Contribution>>({});
   const [farewellModalData, setFarewellModalData] = useState<Partial<FarewellStudent>>({});
+  const [chartView, setChartView] = useState<'velocity' | 'departments'>('velocity');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -305,6 +306,45 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
     toast.success('PDF রিপোর্ট তৈরি হয়েছে');
   };
 
+  const trendData = React.useMemo(() => {
+    const dailyMap: Record<string, { contributions: number; amount: number }> = {};
+    
+    // Sort contributions chronologically
+    const sorted = [...data]
+      .filter(item => item.createdAt)
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    
+    let cumContributions = 0;
+    let cumAmount = 0;
+    
+    sorted.forEach(item => {
+      let dateKey;
+      try {
+        dateKey = format(new Date(item.createdAt), 'dd MMM');
+      } catch (e) {
+        dateKey = 'Unknown';
+      }
+      
+      const isPaid = item.paymentStatus === 'Verified';
+      
+      cumContributions += 1;
+      if (isPaid) {
+        cumAmount += 150;
+      }
+      
+      dailyMap[dateKey] = {
+        contributions: cumContributions,
+        amount: cumAmount
+      };
+    });
+    
+    return Object.entries(dailyMap).map(([date, val]) => ({
+      date,
+      contributions: val.contributions,
+      amount: val.amount
+    })).slice(-12);
+  }, [data]);
+
   const stats = {
     total: data.length,
     paid: data.filter(d => d.paymentStatus === 'Verified').length,
@@ -461,7 +501,7 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
       </div>
 
       {/* Analytics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {activeTab === 'contributions' ? (
           <>
             <StatCard icon={Users} label="Total Entries" value={stats.total} trend="+12% this week" color="indigo" />
@@ -480,46 +520,122 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
       </div>
 
       {/* Visual Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass-card rounded-[3rem] p-8 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden group">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 glass-card rounded-[2rem] p-6 border border-white/5 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/5 blur-[100px] -mr-32 -mt-32 rounded-full" />
-          <div className="flex items-center justify-between mb-10 relative">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative">
             <div>
-              <h3 className="text-xl font-bold text-white mb-1">Department Distribution</h3>
-              <p className="text-slate-500 text-xs font-medium">Record counts across all technologies</p>
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <LayoutDashboard className="w-5 h-5 text-indigo-400" />
+                {chartView === 'velocity' ? 'Collection & Registration Velocity' : 'Department Distribution'}
+              </h3>
+              <p className="text-slate-500 text-xs font-medium">
+                {chartView === 'velocity' ? 'Cumulative registration growth and collection values' : 'Student representation across different departments'}
+              </p>
             </div>
-            <div className="flex gap-2">
-              <div className="w-3 h-3 bg-indigo-500 rounded-full" />
-              <div className="w-3 h-3 bg-purple-500 rounded-full opacity-50" />
+            
+            <div className="flex gap-1 p-1 bg-black/40 rounded-xl border border-white/5 self-start sm:self-auto shrink-0">
+              <button 
+                onClick={() => setChartView('velocity')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer",
+                  chartView === 'velocity' ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30" : "text-slate-500 hover:text-white"
+                )}
+              >
+                Velocity
+              </button>
+              <button 
+                onClick={() => setChartView('departments')}
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer",
+                  chartView === 'departments' ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30" : "text-slate-500 hover:text-white"
+                )}
+              >
+                Departments
+              </button>
             </div>
           </div>
-          <div className="h-[320px] w-full relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={activeTab === 'contributions' ? stats.deptStats : stats.farewell.deptStats}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                <XAxis dataKey="name" stroke="#475569" fontSize={10} axisLine={false} tickLine={false} tick={{dy: 10}} />
-                <YAxis stroke="#475569" fontSize={10} axisLine={false} tickLine={false} />
-                <Tooltip 
-                  cursor={{fill: '#ffffff05'}}
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '12px' }}
-                  itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
-                />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                  {(activeTab === 'contributions' ? stats.deptStats : stats.farewell.deptStats).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} fillOpacity={0.8} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+
+          <div className="h-[260px] w-full relative">
+            {chartView === 'velocity' ? (
+              trendData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={trendData}>
+                    <defs>
+                      <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorContrib" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorGrads" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                    <XAxis dataKey="date" stroke="#475569" fontSize={9} axisLine={false} tickLine={false} tick={{dy: 10}} />
+                    
+                    {activeTab === 'contributions' ? (
+                      <>
+                        <YAxis yAxisId="left" stroke="#6366f1" fontSize={9} axisLine={false} tickLine={false} />
+                        <YAxis yAxisId="right" orientation="right" stroke="#10b981" fontSize={9} axisLine={false} tickLine={false} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '10px' }}
+                          itemStyle={{ fontSize: '11px', fontWeight: 'bold' }}
+                        />
+                        <Area yAxisId="left" type="monotone" dataKey="contributions" name="Contributions" stroke="#6366f1" strokeWidth={2} fillOpacity={1} fill="url(#colorContrib)" />
+                        <Area yAxisId="right" type="monotone" dataKey="amount" name="Collection (BDT)" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" />
+                      </>
+                    ) : (
+                      <>
+                        <YAxis stroke="#f59e0b" fontSize={9} axisLine={false} tickLine={false} />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '10px' }}
+                          itemStyle={{ fontSize: '11px', fontWeight: 'bold' }}
+                        />
+                        <Area type="monotone" dataKey="graduates" name="Graduates Registered" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorGrads)" />
+                      </>
+                    )}
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-xs font-bold uppercase tracking-widest">
+                  No active registration trend data
+                </div>
+              )
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={activeTab === 'contributions' ? stats.deptStats : stats.farewell.deptStats}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                  <XAxis dataKey="name" stroke="#475569" fontSize={9} axisLine={false} tickLine={false} tick={{dy: 10}} />
+                  <YAxis stroke="#475569" fontSize={9} axisLine={false} tickLine={false} />
+                  <Tooltip 
+                    cursor={{fill: '#ffffff05'}}
+                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '10px' }}
+                    itemStyle={{ color: '#fff', fontSize: '11px', fontWeight: 'bold' }}
+                  />
+                  <Bar dataKey="value" name="Count" radius={[6, 6, 0, 0]}>
+                    {(activeTab === 'contributions' ? stats.deptStats : stats.farewell.deptStats).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} fillOpacity={0.8} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
-        <div className="glass-card rounded-[3rem] p-8 md:p-10 border border-white/5 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
+        <div className="glass-card rounded-[2rem] p-6 border border-white/5 flex flex-col items-center justify-between shadow-2xl relative overflow-hidden">
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-600/5 blur-[80px] -ml-24 -mb-24 rounded-full" />
-          <h3 className="text-xl font-bold text-white mb-2 relative">Status Mix</h3>
-          <p className="text-slate-500 text-xs font-medium mb-10 text-center relative">Percentage breakdown of {activeTab === 'contributions' ? 'payments' : 'attendance'}</p>
+          <div className="text-center w-full">
+            <h3 className="text-lg font-bold text-white mb-1 relative">Status Mix</h3>
+            <p className="text-slate-500 text-xs font-medium mb-6 text-center relative">Percentage breakdown of {activeTab === 'contributions' ? 'payments' : 'attendance'}</p>
+          </div>
           
-          <div className="h-[250px] w-full relative">
+          <div className="h-[180px] w-full relative">
             <ResponsiveContainer width="100%" height="100%">
               <RePieChart>
                 <Pie
@@ -530,8 +646,8 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
                     { name: 'Attending', value: stats.farewell.attending },
                     { name: 'Not Attending', value: stats.farewell.notAttending }
                   ]}
-                  innerRadius={70}
-                  outerRadius={95}
+                  innerRadius={55}
+                  outerRadius={75}
                   paddingAngle={8}
                   dataKey="value"
                   stroke="none"
@@ -540,18 +656,18 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
                   <Cell fill={activeTab === 'contributions' ? "#f59e0b" : "#f43f5e"} />
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px' }}
+                  contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                 />
               </RePieChart>
             </ResponsiveContainer>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 w-full mt-8 relative">
-            <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl text-center">
+          <div className="grid grid-cols-2 gap-3 w-full mt-6 relative">
+            <div className="p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl text-center">
               <div className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">{activeTab === 'contributions' ? 'Paid' : 'Yes'}</div>
               <div className="text-xl font-bold text-white">{activeTab === 'contributions' ? stats.paid : stats.farewell.attending}</div>
             </div>
-            <div className={cn("p-4 border rounded-2xl text-center", activeTab === 'contributions' ? "bg-amber-500/5 border-amber-500/10" : "bg-rose-500/5 border-rose-500/10")}>
+            <div className={cn("p-3 border rounded-xl text-center", activeTab === 'contributions' ? "bg-amber-500/5 border-amber-500/10" : "bg-rose-500/5 border-rose-500/10")}>
               <div className={cn("text-[10px] font-black uppercase tracking-widest mb-1", activeTab === 'contributions' ? "text-amber-400" : "text-rose-400")}>{activeTab === 'contributions' ? 'Pending' : 'No'}</div>
               <div className="text-xl font-bold text-white">{activeTab === 'contributions' ? stats.pending : stats.farewell.notAttending}</div>
             </div>
@@ -1062,24 +1178,25 @@ function StatCard({ icon: Icon, label, value, trend, color }: any) {
     emerald: 'from-emerald-600/20 to-emerald-600/5 text-emerald-400 border-emerald-500/20',
     amber: 'from-amber-600/20 to-amber-600/5 text-amber-400 border-amber-500/20',
     purple: 'from-purple-600/20 to-purple-600/5 text-purple-400 border-purple-500/20',
+    rose: 'from-rose-600/20 to-rose-600/5 text-rose-400 border-rose-500/20',
   };
 
   return (
     <div className={cn(
-      "p-8 rounded-[2.5rem] border bg-gradient-to-br backdrop-blur-xl group hover:scale-[1.02] transition-all",
+      "p-5 rounded-2xl md:rounded-[1.75rem] border bg-gradient-to-br backdrop-blur-xl group hover:scale-[1.02] transition-all",
       colors[color]
     )}>
-      <div className="flex items-start justify-between mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
-          <Icon className="w-6 h-6" />
+      <div className="flex items-start justify-between mb-4">
+        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+          <Icon className="w-5 h-5" />
         </div>
-        <div className="text-[10px] font-bold uppercase tracking-widest opacity-60">
+        <div className="text-[10px] font-bold uppercase tracking-widest opacity-60 pt-1">
           {trend}
         </div>
       </div>
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] mb-1 font-black opacity-60">{label}</p>
-        <p className="text-4xl font-display font-extrabold tracking-tight text-white">{value}</p>
+        <p className="text-[10px] uppercase tracking-[0.2em] mb-0.5 font-black opacity-60">{label}</p>
+        <p className="text-2xl md:text-3xl font-display font-black tracking-tight text-white">{value}</p>
       </div>
     </div>
   );
