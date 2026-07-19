@@ -18,8 +18,8 @@ export default defineConfig(() => {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               if (id.includes('firebase')) return 'firebase';
-              if (id.includes('react')) return 'react-vendor';
-              if (id.includes('motion')) return 'motion';
+              if (id.includes('framer-motion') || id.includes('motion')) return 'motion';
+              if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) return 'react-vendor';
               if (id.includes('lucide')) return 'lucide';
               return 'vendor';
             }

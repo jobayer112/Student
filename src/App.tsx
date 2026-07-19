@@ -16,8 +16,6 @@ const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const FarewellRegistration = lazy(() => import('./components/FarewellRegistration'));
 const CardSearch = lazy(() => import('./components/CardSearch'));
 
-import { collection, addDoc, query, where, getDocs, onSnapshot, orderBy } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from './lib/firebase';
 import { Contribution, FarewellStudent, Language } from './types';
 import { Toaster, toast } from 'react-hot-toast';
 
@@ -39,22 +37,40 @@ export default function App() {
   }, []);
 
   React.useEffect(() => {
-    const q = query(collection(db, 'contributions'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const list: Contribution[] = [];
-      snapshot.forEach((doc) => {
-        list.push({ id: doc.id, ...doc.data() } as Contribution);
+    let unsubscribe: (() => void) | undefined;
+    
+    Promise.all([
+      import('firebase/firestore'),
+      import('./lib/firebase')
+    ]).then(([firestore, firebaseLib]) => {
+      const { collection, query, onSnapshot, orderBy } = firestore;
+      const { db, handleFirestoreError, OperationType } = firebaseLib;
+      
+      const q = query(collection(db, 'contributions'), orderBy('createdAt', 'desc'));
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const list: Contribution[] = [];
+        snapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() } as Contribution);
+        });
+        setContributions(list);
+      }, (error) => {
+        handleFirestoreError(error, OperationType.LIST, 'contributions');
       });
-      setContributions(list);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, 'contributions');
-    });
-    return () => unsubscribe();
+    }).catch(console.error);
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (formData: any) => {
     setIsLoading(true);
     try {
+      const [{ collection, addDoc, query, where, getDocs }, { db, handleFirestoreError, OperationType }] = await Promise.all([
+        import('firebase/firestore'),
+        import('./lib/firebase')
+      ]);
+
       // Check for duplicate roll or registration
       const qRoll = query(collection(db, 'contributions'), where('rollNumber', '==', formData.rollNumber));
       try {
@@ -115,7 +131,7 @@ export default function App() {
           key="loader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.2 }}
         >
           <InitialLoader onComplete={() => setInitialLoading(false)} />
         </motion.div>
@@ -124,7 +140,7 @@ export default function App() {
           key="app"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
           className="w-full min-h-screen bg-slate-950 text-white"
         >
           <Layout 
