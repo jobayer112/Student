@@ -547,6 +547,51 @@ const LandingPage = React.memo(({ onStart, onFarewell, lang, contributions }: La
           {content.notice}
         </p>
       </motion.div>
+
+      {/* Desktop Mode Instructions */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="p-6 md:p-8 glass-card rounded-3xl border-blue-500/20 bg-blue-500/5"
+      >
+        <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-3">
+          <span>💻</span>
+          {lang === 'bn' ? 'Desktop Mode চালু করার নির্দেশনা' : 'Instructions to Enable Desktop Mode'}
+        </h3>
+        {lang === 'bn' ? (
+          <div className="space-y-4 text-slate-300 text-sm md:text-base">
+            <p>যদি ওয়েব অ্যাপটি Desktop Mode-এ ব্যবহার করতে চান, তাহলে নিচের ধাপগুলো অনুসরণ করুন:</p>
+            <ol className="list-decimal list-inside space-y-2 ml-2">
+              <li>ব্রাউজারের উপরের ডান পাশে থাকা ⋮ (Three Dots) মেনুতে ট্যাপ করুন।</li>
+              <li>তালিকা থেকে <strong>Desktop site</strong> অপশনটি খুঁজে বের করুন।</li>
+              <li><strong>Desktop site</strong>-এর পাশের চেকবক্সে ✔️ ট্যাপ করুন।</li>
+              <li>ওয়েবসাইটটি স্বয়ংক্রিয়ভাবে রিলোড হয়ে Desktop Version-এ চালু হবে।</li>
+            </ol>
+            <p className="text-amber-400 font-bold mt-4 p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+              [তারপর নিজের রোল নম্বর দিয়ে কার্ডটিতে ছবি এড করে ডাউনলোড করুন]
+            </p>
+            <p className="text-slate-400 italic mt-4">
+              আবার Mobile Mode-এ ফিরতে চাইলে একইভাবে Desktop site-এর ✔️ চিহ্নটি তুলে দিন।
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4 text-slate-300 text-sm md:text-base">
+            <p>If you want to use the web app in Desktop Mode, follow these steps:</p>
+            <ol className="list-decimal list-inside space-y-2 ml-2">
+              <li>Tap the ⋮ (Three Dots) menu on the top right corner of your browser.</li>
+              <li>Find the <strong>Desktop site</strong> option from the list.</li>
+              <li>Tap the checkbox ✔️ next to <strong>Desktop site</strong>.</li>
+              <li>The website will automatically reload and open in Desktop Version.</li>
+            </ol>
+            <p className="text-amber-400 font-bold mt-4 p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+              [Then enter your roll number, add a photo to the card, and download it]
+            </p>
+            <p className="text-slate-400 italic mt-4">
+              To return to Mobile Mode, simply uncheck the ✔️ next to Desktop site in the same way.
+            </p>
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 });
