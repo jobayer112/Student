@@ -17,7 +17,7 @@ interface StudentSearchResult {
   type: 'general' | 'farewell';
 }
 
-const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang, viewMode }) => {
+const CardSearch: React.FC<CardSearchProps> = React.memo(({ onBack, lang, viewMode }) => {
   const [rollNumber, setRollNumber] = useState('');
   const [allStudents, setAllStudents] = useState<StudentSearchResult[]>([]);
   const [preloadLoading, setPreloadLoading] = useState(true);
@@ -318,6 +318,6 @@ const CardSearch: React.FC<CardSearchProps> = ({ onBack, lang, viewMode }) => {
       )}
     </div>
   );
-};
+});
 
 export default CardSearch;

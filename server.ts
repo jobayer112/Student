@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
@@ -9,6 +10,7 @@ import firebaseConfig from './firebase-applet-config.json';
 export const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+app.use(compression());
 app.use(express.json());
 
 // Initialize Firebase Admin
@@ -177,7 +179,11 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { maxAge: '1y', setHeaders: (res, path) => {
+      if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }}));
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });

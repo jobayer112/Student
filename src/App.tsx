@@ -85,11 +85,13 @@ export default function App() {
 
   React.useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+    let isMounted = true;
     
     Promise.all([
       import('firebase/firestore'),
       import('./lib/firebase')
     ]).then(([firestore, firebaseLib]) => {
+      if (!isMounted) return;
       const { collection, query, onSnapshot, orderBy } = firestore;
       const { db, handleFirestoreError, OperationType } = firebaseLib;
       
@@ -106,6 +108,7 @@ export default function App() {
     }).catch(console.error);
 
     return () => {
+      isMounted = false;
       if (unsubscribe) unsubscribe();
     };
   }, []);
