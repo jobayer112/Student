@@ -102,6 +102,10 @@
     "/contributions/{contributionId}": {
       "schema": "contribution",
       "description": "Collection of all student contributions"
+    },
+    "/settings/{settingId}": {
+      "schema": "settings",
+      "description": "System configuration and settings"
     }
   }
 }

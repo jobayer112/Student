@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,6 +11,8 @@ import {
 import { Department, Semester, Shift, PaymentMethod, PaymentStatus } from '../types';
 import { cn } from '../lib/utils';
 import toast from 'react-hot-toast';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
 const DEPARTMENTS: Department[] = ["Computer", "Electronics", "Electrical", "Civil", "Mechanical", "Refrigeration & Air Conditioning", "Environmental"];
 const SEMESTERS: Semester[] = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
@@ -45,6 +47,22 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(true);
   const [errorModal, setErrorModal] = useState<string | null>(null);
+  const [bkashNumber, setBkashNumber] = useState<string>('01894-548232');
+
+  useEffect(() => {
+    const fetchPaymentSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'payment');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.data()?.bkashNumber) {
+          setBkashNumber(docSnap.data().bkashNumber);
+        }
+      } catch (err) {
+        console.warn('Could not load bKash number settings:', err);
+      }
+    };
+    fetchPaymentSettings();
+  }, []);
 
   const { register, handleSubmit, watch, trigger, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -404,11 +422,12 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
                       <div className="w-full aspect-square bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-xl">
                         <Smartphone className="w-10 h-10 text-white mb-3" />
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="text-white font-black text-lg leading-tight">01894-548232</p>
+                          <p className="text-white font-black text-lg leading-tight">{bkashNumber}</p>
                           <button 
                             type="button"
                             onClick={() => {
-                              navigator.clipboard.writeText('01894548232');
+                              const numToCopy = bkashNumber.replace(/[^0-9]/g, '') || bkashNumber;
+                              navigator.clipboard.writeText(numToCopy);
                               toast.success('নম্বরটি কপি করা হয়েছে!');
                             }}
                             className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-all active:scale-90"
@@ -420,7 +439,7 @@ export default function ContributionForm({ onSubmit, onBack, lang }: Contributio
                         <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Personal Account</p>
                       </div>
                     </div>
-                    <p className="text-[10px] text-center text-slate-500 font-bold">01894-548232 (Personal)</p>
+                    <p className="text-[10px] text-center text-slate-500 font-bold">{bkashNumber} (Personal)</p>
                   </div>
                 </div>
 

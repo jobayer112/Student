@@ -15,13 +15,14 @@ import {
 } from 'recharts';
 import { Contribution, AdminStats, Language, FarewellStudent } from '../types';
 import { cn } from '../lib/utils';
-import { collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, orderBy, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import toast from 'react-hot-toast';
+import { QrCode, Copy } from 'lucide-react';
 
 interface AdminPanelProps {
   onClose: () => void;
@@ -35,7 +36,9 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
   const [error, setError] = useState('');
   const [data, setData] = useState<Contribution[]>([]);
   const [farewellData, setFarewellData] = useState<FarewellStudent[]>([]);
-  const [activeTab, setActiveTab] = useState<'contributions' | 'farewell'>('contributions');
+  const [activeTab, setActiveTab] = useState<'contributions' | 'farewell' | 'settings'>('contributions');
+  const [bkashNumber, setBkashNumber] = useState<string>('01894-548232');
+  const [savingBkash, setSavingBkash] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDept, setFilterDept] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
@@ -104,11 +107,44 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
         farewellList.push({ id: doc.id, ...doc.data() } as FarewellStudent);
       });
       setFarewellData(farewellList);
+
+      // Fetch Payment Settings
+      try {
+        const docRef = doc(db, 'settings', 'payment');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.data()?.bkashNumber) {
+          setBkashNumber(docSnap.data().bkashNumber);
+        }
+      } catch (settingErr) {
+        console.warn('Could not load payment settings:', settingErr);
+      }
     } catch (err: any) {
       console.error('Fetch error:', err);
       toast.error('ডাটা লোড করতে ব্যর্থ হয়েছে।');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveBkash = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bkashNumber.trim()) {
+      toast.error('বিকাশ নম্বরটি ফাঁকা রাখা যাবে না!');
+      return;
+    }
+    setSavingBkash(true);
+    try {
+      const docRef = doc(db, 'settings', 'payment');
+      await setDoc(docRef, {
+        bkashNumber: bkashNumber.trim(),
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      toast.success('বিকাশ নম্বর সফলভাবে আপডেট করা হয়েছে!');
+    } catch (err) {
+      console.error('Error saving bKash number:', err);
+      toast.error('বিকাশ নম্বর সেভ করা সম্ভব হয়নি।');
+    } finally {
+      setSavingBkash(false);
     }
   };
 
@@ -465,7 +501,7 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
             <button 
               onClick={() => setActiveTab('contributions')}
               className={cn(
-                "flex-1 sm:flex-none px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                "flex-1 sm:flex-none px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                 activeTab === 'contributions' ? "bg-indigo-600 text-white shadow-xl shadow-indigo-600/30" : "text-slate-500 hover:text-white"
               )}
             >
@@ -474,11 +510,21 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
             <button 
               onClick={() => setActiveTab('farewell')}
               className={cn(
-                "flex-1 sm:flex-none px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                "flex-1 sm:flex-none px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
                 activeTab === 'farewell' ? "bg-indigo-600 text-white shadow-xl shadow-indigo-600/30" : "text-slate-500 hover:text-white"
               )}
             >
               Graduates
+            </button>
+            <button 
+              onClick={() => setActiveTab('settings')}
+              className={cn(
+                "flex-1 sm:flex-none px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5",
+                activeTab === 'settings' ? "bg-pink-600 text-white shadow-xl shadow-pink-600/30" : "text-slate-500 hover:text-white"
+              )}
+            >
+              <Smartphone className="w-3.5 h-3.5 text-pink-300" />
+              <span>bKash Settings</span>
             </button>
           </div>
 
@@ -500,7 +546,90 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
         </div>
       </div>
 
-      {/* Analytics Grid */}
+      {activeTab === 'settings' ? (
+        <div className="max-w-4xl mx-auto space-y-8 py-4">
+          {/* bKash Configuration Card */}
+          <div className="glass-card rounded-[2.5rem] p-8 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-pink-600/10 blur-[120px] -mr-40 -mt-40 rounded-full pointer-events-none" />
+            
+            <div className="flex items-center gap-4 mb-8 relative">
+              <div className="w-14 h-14 bg-pink-500/10 rounded-2xl flex items-center justify-center border border-pink-500/20 shadow-lg">
+                <Smartphone className="w-7 h-7 text-pink-400" />
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-display font-black text-white">বিকাশ নম্বর ব্যবস্থাপনা (bKash Settings)</h2>
+                <p className="text-slate-400 text-sm">কন্ট্রিবিউশন ফর্মের পেমেন্ট পেজে প্রদর্শিত বিকাশ পার্সোনাল নম্বর পরিবর্তন বা আপডেট করুন</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveBkash} className="space-y-6 relative">
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                  <span>বিকাশ পার্সোনাল নম্বর (bKash Personal Number)</span>
+                </label>
+                <div className="relative">
+                  <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-pink-400" />
+                  <input 
+                    type="text" 
+                    value={bkashNumber}
+                    onChange={(e) => setBkashNumber(e.target.value)}
+                    placeholder="01894-548232"
+                    className="glass-input w-full pl-12 pr-4 py-4 text-lg md:text-xl font-bold text-white tracking-widest font-mono"
+                    required
+                  />
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed bg-white/5 p-4 rounded-xl border border-white/5">
+                  💡 <strong>টিপস:</strong> শিক্ষার্থীরা যখন কন্ট্রিবিউশন ফর্ম পূরণ করার সময় 'bKash' নির্বাচন করবে, তখন আপনার দেওয়া এই নম্বরটি পেমেন্ট কার্ডে দেখতে পাবে এবং এক ক্লিকেই কপি করতে পারবে।
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-6 border-t border-white/5">
+                <button
+                  type="submit"
+                  disabled={savingBkash}
+                  className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-pink-600/20 disabled:opacity-50 cursor-pointer"
+                >
+                  {savingBkash ? <Loader2 className="w-5 h-5 animate-spin" /> : <Check className="w-5 h-5" />}
+                  <span>{savingBkash ? 'সংরক্ষণ করা হচ্ছে...' : 'বিকাশ নম্বর পরিবর্তন করুন'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Live Preview Card */}
+          <div className="glass-card rounded-[2.5rem] p-8 border border-white/5 space-y-6">
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+              <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                <QrCode className="w-5 h-5 text-indigo-400" />
+                <span>কন্ট্রিবিউশন ফর্মে যেমন দেখাবে (Live Preview)</span>
+              </h3>
+              <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">Live Preview</span>
+            </div>
+            
+            <div className="max-w-md mx-auto glass-card rounded-3xl p-6 border-indigo-500/20 bg-indigo-500/5 space-y-4">
+              <div className="flex items-center gap-3 text-indigo-400 mb-2">
+                <QrCode className="w-6 h-6" />
+                <span className="font-bold text-sm tracking-widest uppercase">Scan to Pay</span>
+              </div>
+              <div className="flex justify-center relative">
+                <div className="w-full bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex flex-col items-center justify-center p-6 text-center shadow-xl">
+                  <Smartphone className="w-10 h-10 text-white mb-3" />
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-white font-black text-xl leading-tight">{bkashNumber || '01894-548232'}</p>
+                    <span className="p-1.5 rounded-lg bg-white/20 text-white text-xs">
+                      <Copy className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                  <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">Personal Account</p>
+                </div>
+              </div>
+              <p className="text-[10px] text-center text-slate-500 font-bold">{bkashNumber || '01894-548232'} (Personal)</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Analytics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {activeTab === 'contributions' ? (
           <>
@@ -907,6 +1036,8 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
           )}
         </div>
       </div>
+      </>
+      )}
       
       <div className="text-center pt-10">
          <button onClick={onClose} className="text-slate-600 hover:text-indigo-400 transition-colors text-[10px] uppercase tracking-[0.3em] font-black">
